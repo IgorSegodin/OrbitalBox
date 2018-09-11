@@ -3,55 +3,65 @@
 
 class InputProcessor {
 
-	onKeyDown(keyCode, world) {}
-	onKeyUp(keyCode, world) {}
+    onKeyDown(keyCode, world) {
+    }
+
+    onKeyUp(keyCode, world) {
+    }
 }
 
 class WorldSimulator {
 
-	simulate(/** TODO some time period, passed between simulations */) {
+    simulate(/** TODO some time period, passed between simulations */) {
 
-	}
+    }
 }
 
 
 class World {
 
-	constructor() {
-		this.inputProcessors = [];
-		this.worldSimulators = [];
-		this.eventListeners = [];
+    constructor() {
+        this.inputProcessors = [];
+        this.worldSimulators = [];
+        this.eventListeners = [];
 
-	}
+    }
 
-	/**
-	 * @param processor {InputProcessor}
-	 */
-	addInputProcessor(processor) {
+    /**
+     * @param processor {InputProcessor}
+     */
+    addInputProcessor(processor) {
 
-	}
+    }
 
-	/**
-	 * @param simulator {WorldSimulator}
-	 */
-	addSimulator(simulator) {
+    /**
+     * @param simulator {WorldSimulator}
+     */
+    addSimulator(simulator) {
 
-	}
+    }
 
-	addEventListener(listener) {}
+    addEventListener(listener) {
+    }
 
-	pauseTime() {}
-	resumeTime() {}
+    pauseTime() {
+    }
 
-	getTime() {
+    resumeTime() {
+    }
 
-	}
+    getTime() {
 
-	triggerEvent({type, props}) {}
+    }
 
-	processTick() {}
+    triggerEvent({type, props}) {
+    }
 
-	destroy() {}
+    processTick() {
+    }
+
+    destroy() {
+    }
 
 }
 

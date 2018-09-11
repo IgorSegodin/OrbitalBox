@@ -1,54 +1,54 @@
 function simulateTranslation(objects, world) {
 
-	// TODO use world timer
-	const now = new Date().getTime();
+    // TODO use world timer
+    const now = new Date().getTime();
 
-	for (let obj of objects) {
-		let translations = obj.get("translations");
-		if (!translations || translations.length === 0) {
-			continue;
-		}
+    for (let obj of objects) {
+        let translations = obj.get("translations");
+        if (!translations || translations.length === 0) {
+            continue;
+        }
 
-		let finishedTranslationData = [];
+        let finishedTranslationData = [];
 
-		for (let idx = 0; idx < translations.length; idx++) {
-			const translationData = translations[idx];
+        for (let idx = 0; idx < translations.length; idx++) {
+            const translationData = translations[idx];
 
-			if (!translationData._simulation) {
-				translationData._simulation = {
-					startTime: now,
-					finishTime: now + translationData.duration
-				};
-			}
+            if (!translationData._simulation) {
+                translationData._simulation = {
+                    startTime: now,
+                    finishTime: now + translationData.duration
+                };
+            }
 
-			const timePassed = now - translationData._simulation.startTime;
+            const timePassed = now - translationData._simulation.startTime;
 
-			const linearProgress = timePassed / translationData.duration;
+            const linearProgress = timePassed / translationData.duration;
 
-			translationData.updateValue({timePassed, linearProgress, translationData, targetObject: obj});
+            translationData.updateValue({timePassed, linearProgress, translationData, targetObject: obj});
 
-			if (now >= translationData._simulation.finishTime) {
-				if (translationData.infinite) {
-					throw new Error('Infinite animation is not implemented yet');
-				} else {
-					finishedTranslationData.push(translationData);
-				}
-			}
-		}
+            if (now >= translationData._simulation.finishTime) {
+                if (translationData.infinite) {
+                    throw new Error('Infinite animation is not implemented yet');
+                } else {
+                    finishedTranslationData.push(translationData);
+                }
+            }
+        }
 
-		for (let translationData of finishedTranslationData) {
-			const idx = translations.indexOf(translationData);
-			translations = translations.splice(idx + 1, 1);
+        for (let translationData of finishedTranslationData) {
+            const idx = translations.indexOf(translationData);
+            translations = translations.splice(idx + 1, 1);
 
-			if (translationData.onFinish) {
-				translationData.onFinish({translationData, targetObject: obj});
-			}
-		}
+            if (translationData.onFinish) {
+                translationData.onFinish({translationData, targetObject: obj});
+            }
+        }
 
-		obj.set({
-			translations
-		});
-	}
+        obj.set({
+            translations
+        });
+    }
 
 }
 

@@ -8,107 +8,107 @@ import {rgbaTranslation, scaleTranslation} from 'game/translation/TranslationFac
 
 class Game {
 
-	constructor(canvasEl) {
-		this.canvas = new fabric.Canvas(canvasEl);
-		this.canvas.setHeight(window.innerHeight * 0.98);
-		this.canvas.setWidth(window.innerWidth * 0.98);
-	}
+    constructor(canvasEl) {
+        this.canvas = new fabric.Canvas(canvasEl);
+        this.canvas.setHeight(window.innerHeight * 0.98);
+        this.canvas.setWidth(window.innerWidth * 0.98);
+    }
 
-	init() {
-		this.start();
-	}
+    init() {
+        this.start();
+    }
 
-	registerRestartInputListener(world) {
-		let restartInputHandler = (e) => {
-			if (13 === e.keyCode && !world.player.get("canMove")) {
-				this.start();
-			}
-		};
-		document.addEventListener("keydown", restartInputHandler);
-		return function() {
-			document.removeEventListener("keydown", restartInputHandler);
-		}
-	}
+    registerRestartInputListener(world) {
+        let restartInputHandler = (e) => {
+            if (13 === e.keyCode && !world.player.get("canMove")) {
+                this.start();
+            }
+        };
+        document.addEventListener("keydown", restartInputHandler);
+        return function () {
+            document.removeEventListener("keydown", restartInputHandler);
+        }
+    }
 
-	start() {
-		generateWorld(this.canvas.getWidth(), this.canvas.getHeight()).then((world) => {
+    start() {
+        generateWorld(this.canvas.getWidth(), this.canvas.getHeight()).then((world) => {
 
-			this.clear();
+            this.clear();
 
-			world.eventCallbacks.gameOver = () => {
-				this.alert({
-					text: "Game Over",
-					color: {r: 220, g: 0, b: 0}
-				});
-			};
+            world.eventCallbacks.gameOver = () => {
+                this.alert({
+                    text: "Game Over",
+                    color: {r: 220, g: 0, b: 0}
+                });
+            };
 
-			world.eventCallbacks.success = () => {
-				this.alert({
-					text: "Flawless victory",
-					color: {r: 160, g: 220, b: 50}
-				});
-			};
+            world.eventCallbacks.success = () => {
+                this.alert({
+                    text: "Flawless victory",
+                    color: {r: 160, g: 220, b: 50}
+                });
+            };
 
-			this.unregisterRestartInputListener = this.registerRestartInputListener(world);
+            this.unregisterRestartInputListener = this.registerRestartInputListener(world);
 
-			document.addEventListener("keydown", this.restartInputHandler);
+            document.addEventListener("keydown", this.restartInputHandler);
 
-			this.canvas.add(world.prize);
-			this.canvas.add(world.player);
+            this.canvas.add(world.prize);
+            this.canvas.add(world.player);
 
-			for (let obj of world.objects) {
-				this.canvas.add(obj);
-			}
+            for (let obj of world.objects) {
+                this.canvas.add(obj);
+            }
 
-			inputListener(world);
+            inputListener(world);
 
-			this.interval = setInterval(() => {
-				simulateWorld(world);
-				simulateTranslation(this.canvas.getObjects(), world);
-				this.canvas.renderAll();
-			}, 40);
-		});
-	}
+            this.interval = setInterval(() => {
+                simulateWorld(world);
+                simulateTranslation(this.canvas.getObjects(), world);
+                this.canvas.renderAll();
+            }, 40);
+        });
+    }
 
-	alert({text, color:{r, g, b}}) {
-		const textElem = new fabric.Text(text, {
-			fontWeight: 'bold',
-			fill: `rgba(${r},${g},${b},0)`,
-			fontSize: this.canvas.getHeight() * 0.15,
-			scaleX: 0.2,
-			scaleY: 0.2,
-			translations: [
-				rgbaTranslation({
-					duration: 1000,
-					finalValue: `rgba(${r},${g},${b},1)`
-				}),
-				scaleTranslation({
-					duration: 1000,
-					finalValue: 1
-				})
-			]
-		});
+    alert({text, color: {r, g, b}}) {
+        const textElem = new fabric.Text(text, {
+            fontWeight: 'bold',
+            fill: `rgba(${r},${g},${b},0)`,
+            fontSize: this.canvas.getHeight() * 0.15,
+            scaleX: 0.2,
+            scaleY: 0.2,
+            translations: [
+                rgbaTranslation({
+                    duration: 1000,
+                    finalValue: `rgba(${r},${g},${b},1)`
+                }),
+                scaleTranslation({
+                    duration: 1000,
+                    finalValue: 1
+                })
+            ]
+        });
 
-		textElem.set({
-			left: this.canvas.getWidth() / 2 - textElem.getWidth() / 2,
-			top: this.canvas.getHeight() / 2 - textElem.getHeight() / 2,
-		});
+        textElem.set({
+            left: this.canvas.getWidth() / 2 - textElem.getWidth() / 2,
+            top: this.canvas.getHeight() / 2 - textElem.getHeight() / 2,
+        });
 
-		this.canvas.add(textElem);
-	}
+        this.canvas.add(textElem);
+    }
 
-	clear() {
-		if (this.interval) {
-			clearInterval(this.interval);
-			this.interval = null;
-		}
-		if (this.unregisterRestartInputListener) {
-			this.unregisterRestartInputListener();
-			this.unregisterRestartInputListener = null;
-		}
+    clear() {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+        if (this.unregisterRestartInputListener) {
+            this.unregisterRestartInputListener();
+            this.unregisterRestartInputListener = null;
+        }
 
-		this.canvas.clear();
-	}
+        this.canvas.clear();
+    }
 
 }
 

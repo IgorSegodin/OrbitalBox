@@ -3,9 +3,9 @@ import Game from 'game/Game';
 
 document.addEventListener("DOMContentLoaded", function () {
 
-	const canvasEl = document.createElement('canvas');
+    const canvasEl = document.createElement('canvas');
 
-	new Game(canvasEl).init();
+    new Game(canvasEl).init();
 
-	document.body.appendChild(canvasEl);
+    document.body.appendChild(canvasEl);
 });
