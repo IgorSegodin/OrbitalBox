@@ -71,6 +71,17 @@ function isIntersected(obj1, obj2, tolerance = 0) {
         Math.abs(y1 - y2) + tolerance <= h1 / 2 + h2 / 2;
 }
 
+function containPoint({x, y}, targetObj) {
+    // let point = new fabric.Point(x, y);
+    // return targetObj.containsPoint(point);
+    const x1 = targetObj.get('left');
+    const y1 = targetObj.get('top');
+    const x2 = x1 + targetObj.getWidth();
+    const y2 = y1 + targetObj.getHeight();
+
+    return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+}
+
 /**
  * @param valueString {String} text like: rgba(255,255,255,1)
  * @return {Object} wrapped RGBA values
@@ -90,6 +101,7 @@ function parseRgba(valueString) {
 export {
     promiseImage,
     isIntersected,
+    containPoint,
     Rgba,
     parseRgba
 }

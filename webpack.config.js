@@ -18,18 +18,18 @@ module.exports = {
         filename: '[name].js',
         chunkFilename: '[name].js'
     },
-    devtool: 'inline-source-map',
-    // devtool: 'source-map',
+    // devtool: 'inline-source-map',
+    devtool: 'eval-source-map',
     devServer: {
         contentBase: output,
-        compress: true,
+        compress: false,
         host: "0.0.0.0",
         port: 8080
     },
     plugins: [
         new CleanWebpackPlugin([output]),
         new HtmlWebpackPlugin({
-            title: 'Black Runner',
+            title: 'Orbital box',
             inject: 'head',
             favicon: path.resolve(input, "favico.ico"),
             hash: true
