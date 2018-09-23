@@ -1,65 +1,155 @@
-import {LEFT_MOUSE_BTN, RIGHT_MOUSE_BTN} from 'game/input/canvasListener';
-import {containPoint} from 'util/FabricUtil';
+import MathUtil from 'game/math/MathUtil';
+import Point from 'game/math/Point';
+import Vector from 'game/math/Vector';
 
 function simulateWorld(world, dT) {
-    dT = dT / 1000;
+    dT = dT / 1000; // seconds
 
     for (let obj of world.objects) {
 
-        if (world.cursor.input[LEFT_MOUSE_BTN] &&
-            containPoint({x: world.cursor.x, y: world.cursor.y}, obj)) {
-            console.log(`dV: ${1 * dT}`);
-            obj.set({
-                velocity: obj.get("velocity") + (15 * dT)
-            });
+        const gameData = obj.get("gameData");
+
+        if (gameData.static) {
+            continue;
         }
 
-        const height = world.height - obj.get("top") - obj.getHeight();
-        const velocity = obj.get("velocity");
+        const objects = world.objects.slice();
+        objects.splice(objects.indexOf(obj), 1);
 
-        const newProps = calcNextProps({
-            height: height / 100,
-            velocity
-        }, dT);
+        const objPoint = getObjectPoint({object: obj, world});
 
-        let top = world.height - (newProps.height * 100) - obj.getHeight();
+        let velocityVector = gameData.velocityVector || new Vector({value: 0, angle: 0});
 
-        obj.set({
-            top: top,
-            velocity: newProps.velocity
+        for (let otherObj of objects) {
+            const otherGameData = otherObj.get("gameData");
+            if (!otherGameData.gravityForce) {
+                continue;
+            }
+
+            const gravityVectorAngle = MathUtil.calcAngle({center: objPoint, point: getObjectPoint({object: otherObj, world})});
+
+            const gravityVector = new Vector({value: otherGameData.gravityForce, angle: gravityVectorAngle});
+
+            velocityVector = MathUtil.sumVectors({firstVector: velocityVector, secondVector: gravityVector});
+        }
+
+        gameData.velocityVector = calcVelocityChange({
+            velocityVector: gameData.velocityVector,
+            targetVelocity: velocityVector,
+            dT: dT
         });
+
+        const finalDirectionVector = new Vector({value: velocityVector.getValue() * dT, angle: velocityVector.getAngle()});
+
+        const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
+
+        world.infoText.set({text: `v: ${Math.round(velocityVector.getValue())} \r\na: ${Math.round(velocityVector.getAngle())}`});
+
+        setObjectPoint({point: newObjPoint, object: obj, world: world});
     }
 
 }
 
 /**
- * @param height
- * @param velocity
- * @param dT in seconds
- * @return {{height: number, velocity: number}}
+ * @param object
+ * @param world
+ * @return {Point}
  */
-function calcNextProps({height, velocity = 0}, dT) {
-    const g = 9.8;
-    const rho = 0.75; // coefficient of restitution
+function getObjectPoint({object, world}) {
+    const top = object.get("top");
+    const left = object.get("left");
+    const width = object.getWidth();
+    const height = object.getHeight();
 
-    velocity = Math.abs(velocity) < 0.0001 ? 0 : velocity;
-
-    const dH = velocity * dT - g * dT * dT / 2;
-
-    const newHeight = height + dH;
-
-    if (newHeight < 0) {
-        // bounce
-        return {
-            height: 0,
-            velocity: Math.abs(velocity * rho)
-        }
-    }
-
-    return {
-        height: newHeight,
-        velocity: velocity - g * dT
-    };
+    return new Point({
+        x: left + width / 2,
+        y: world.height - top - height / 2
+    });
 }
+
+/**
+ * @param point {Point}
+ * @param object {Object}
+ * @param world {Object}
+ */
+function setObjectPoint({point, object, world}) {
+    object.set({
+        left: point.getX() - object.getWidth() / 2,
+        top: world.height - point.getY() - object.getHeight() / 2
+    });
+}
+
+/**
+ * @param velocityVector {Vector}
+ * @param accelerationVector {Vector}
+ * @param dT {Number} optional
+ * @return {Vector}
+ */
+function calcVelocityChange({velocityVector, targetVelocity, dT = 1}) {
+    // TODO fix logic
+    // const angle = targetVelocity.getAngle() - velocityVector.getAngle();
+    //
+    // const dV = targetVelocity.getValue() * Math.cos(MathUtil.angleToRadians(angle));
+    // const newValue = velocityVector.getValue() + dV * dT;
+    // if (newValue < 0) {
+    //     return new Vector({value: Math.abs(newValue), angle: targetVelocity.getAngle()});
+    // } else {
+    //     const influence = targetVelocity.getValue() / velocityVector.getValue();
+    //     return new Vector({value: newValue, angle: velocityVector.getAngle() + angle * dT * influence});
+    // }
+    return velocityVector;
+}
+
+/*---------------Test--------------*/
+
+function assertVectorEquals(expected, real) {
+    const equal = Math.round(expected.getValue()) === Math.round(real.getValue()) &&
+        Math.round(expected.getAngle()) === Math.round(real.getAngle());
+
+    if (!equal) {
+        throw new Error(`Got ${real}, expected ${expected}`);
+    }
+}
+
+// G: V[10, 357.8514879198195° ] Velocity: V[49.14240078869485,  236.9416591870505° ], Direction: V[9.036308801296139, 242.26286833136876°], Point: P[565.167976143597,  179.37042596106056]
+
+// G: V[10, 1.949407745212718° ]
+
+// assertVectorEquals(new Vector({value: 0, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 49, angle: 237}),
+//     accelerationVector: new Vector({value: 10, angle: 356}) // 44, 261
+//     // accelerationVector: new Vector({value: 10, angle: 358}) // 43, 262
+//     //accelerationVector: new Vector({value: 10, angle: 2}) // 43, 189
+// }));
+
+// ---
+
+// assertVectorEquals(new Vector({value: 17, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 10, angle: 45})
+// }));
+// assertVectorEquals(new Vector({value: 10, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 10, angle: 90})
+// }));
+// assertVectorEquals(new Vector({value: 3, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 10, angle: 135})
+// }));
+// assertVectorEquals(new Vector({value: 4, angle: 135}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 20, angle: 135})
+// }));
+// assertVectorEquals(new Vector({value: 0, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 10, angle: 180})
+// }));
+// assertVectorEquals(new Vector({value: 20, angle: 0}), calcVelocity({
+//     velocityVector: new Vector({value: 10, angle: 0}),
+//     accelerationVector: new Vector({value: 10, angle: 0})
+// }));
+
+/*---------------End Test--------------*/
+
 
 export default simulateWorld;

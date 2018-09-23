@@ -26,6 +26,7 @@ class Game {
             for (let obj of world.objects) {
                 this.canvas.add(obj);
             }
+            this.canvas.add(world.infoText);
 
             inputListener(world);
             canvasListener(this.canvas.getElement(), world);
@@ -38,9 +39,10 @@ class Game {
                 simulateTranslation(this.canvas.getObjects(), world);
                 this.canvas.renderAll();
                 t0 = t1;
-            }, 1);
+            }, 200);
         });
     }
+
 
     clear() {
         if (this.interval) {

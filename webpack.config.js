@@ -20,6 +20,7 @@ module.exports = {
     },
     // devtool: 'inline-source-map',
     devtool: 'eval-source-map',
+    mode: 'development',
     devServer: {
         contentBase: output,
         compress: false,
