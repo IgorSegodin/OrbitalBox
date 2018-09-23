@@ -1,7 +1,7 @@
 import {fabric} from 'fabric';
-import PekaImage from 'peka.png';
-import DollarImage from 'dollar.png';
-import {promiseImage} from 'util/FabricUtil';
+// import PekaImage from 'peka.png';
+// import DollarImage from 'dollar.png';
+// import {promiseImage} from 'util/FabricUtil';
 import Vector from 'game/math/Vector'
 
 function random(min, max) {
