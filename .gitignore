@@ -1,6 +1,7 @@
 .idea
-dist
-node_modules
 *.iml
 
+node_modules
+dist
+test_dist
 readme.txt
