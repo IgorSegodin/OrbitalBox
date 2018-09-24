@@ -1,7 +1,12 @@
+import {MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT} from 'game/input/inputListener';
+
 import MathUtil from 'game/math/MathUtil';
 import PhysUtil from 'game/physics/PhysUtil';
 import Point from 'game/math/Point';
 import Vector from 'game/math/Vector';
+
+// TODO find problem with counter-clockwise calc
+// TODO calc dV, dA for each force vector
 
 function simulateWorld(world, dT) {
     dT = dT / 1000; // seconds
@@ -19,7 +24,7 @@ function simulateWorld(world, dT) {
 
         const objPoint = getObjectPoint({object: obj, world});
 
-        let velocityVector = gameData.velocityVector || new Vector({value: 0, angle: 0});
+        // let velocityVector = gameData.velocityVector || new Vector({value: 0, angle: 0});
 
         for (let otherObj of objects) {
             const otherGameData = otherObj.get("gameData");
@@ -31,22 +36,46 @@ function simulateWorld(world, dT) {
 
             const gravityVector = new Vector({value: otherGameData.gravityForce, angle: gravityVectorAngle});
 
-            velocityVector = MathUtil.sumVectors({firstVector: velocityVector, secondVector: gravityVector});
+            // velocityVector = MathUtil.sumVectors({firstVector: velocityVector, secondVector: gravityVector});
+
+            gameData.velocityVector = PhysUtil.calcVelocityChange({
+                velocityVector: gameData.velocityVector,
+                targetVelocity: gravityVector,
+                dT: dT
+            });
         }
+        // const oldVel = gameData.velocityVector;
+        //
+        // gameData.velocityVector = PhysUtil.calcVelocityChange({
+        //     velocityVector: gameData.velocityVector,
+        //     targetVelocity: velocityVector,
+        //     dT: dT
+        // });
 
-        gameData.velocityVector = PhysUtil.calcVelocityChange({
-            velocityVector: gameData.velocityVector,
-            targetVelocity: velocityVector,
-            dT: dT
-        });
+        // console.log(`old Vel ${oldVel} Vel ${gameData.velocityVector}`);
 
-        const finalDirectionVector = new Vector({value: velocityVector.getValue() * dT, angle: velocityVector.getAngle()});
+        const finalDirectionVector = new Vector({value: gameData.velocityVector.getValue() * dT, angle: gameData.velocityVector.getAngle()});
 
         const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
 
-        world.infoText.set({text: `v: ${Math.round(velocityVector.getValue())} \r\na: ${Math.round(velocityVector.getAngle())}`});
+        // world.infoText.set({text: `v: ${Math.round(velocityVector.getValue())} \r\na: ${Math.round(velocityVector.getAngle())}`});
 
         setObjectPoint({point: newObjPoint, object: obj, world: world});
+
+        if (world.input[MOVE_UP]) {
+            gameData.velocityVector = new Vector({
+                    value: gameData.velocityVector.getValue() + 100 * dT,
+                angle:gameData.velocityVector.getAngle()
+            });
+        }
+
+        if (world.input[MOVE_DOWN]) {
+            gameData.velocityVector = new Vector({
+                value: gameData.velocityVector.getValue() - 100 * dT,
+                angle:gameData.velocityVector.getAngle()
+            });
+        }
+
     }
 
 }

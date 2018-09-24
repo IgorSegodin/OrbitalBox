@@ -116,18 +116,18 @@ describe('MathUtil tests', function () {
             secondVector: v90
         }));
     });
-    it('sumVectors test 8-68', function () {
+    it('sumVectors test 8-67', function () {
         /*
          \_
          */
-        assertVectorEquals(new Vector({value: 8, angle: 68}), MathUtil.sumVectors({
+        assertVectorEquals(new Vector({value: 8, angle: 67}), MathUtil.sumVectors({
             firstVector: v0,
             secondVector: v135
         }));
     });
     it('sumVectors test 0-90', function () {
         /* _ _ */
-        assertVectorEquals(new Vector({value: 0, angle: 90}), MathUtil.sumVectors({
+        assertVectorEquals(new Vector({value: 0, angle: 0}), MathUtil.sumVectors({
             firstVector: v0,
             secondVector: v180
         }));

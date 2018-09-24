@@ -31,6 +31,7 @@ class Game {
             inputListener(world);
             canvasListener(this.canvas.getElement(), world);
 
+            // TODO separate timer for internal clock, to use it instead of real computer time;
             let t0 = new Date().getTime();
 
             this.interval = setInterval(() => {

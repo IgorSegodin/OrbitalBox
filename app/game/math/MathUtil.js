@@ -58,7 +58,7 @@ function sumVectors({firstVector, secondVector}) {
     let resultAngle;
 
     if (sumVal === 0) {
-        resultAngle = 90;
+        resultAngle = firstVector.getAngle();
     } else {
         resultAngle = radiansToAngle(Math.acos(
             (Math.pow(sumVal, 2) + Math.pow(firstVector.getValue(), 2) - Math.pow(secondVector.getValue(), 2)) / (2 * sumVal * firstVector.getValue())

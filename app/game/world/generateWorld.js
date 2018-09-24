@@ -37,8 +37,8 @@ function generateWorld(width, height) {
             gameData: {
                 name: "Moon",
                 velocityVector: new Vector({
-                    value: 30,
-                    angle: 120
+                    value: 50,
+                    angle: 100
                 })
             }
         })
