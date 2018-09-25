@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const input = path.resolve(__dirname, "app");
-const output = path.resolve(__dirname, 'dist');
+const output = path.resolve(__dirname, 'docs');
 
 module.exports = {
     entry: {
