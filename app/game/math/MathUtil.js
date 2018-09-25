@@ -33,6 +33,18 @@ function calcAngle({center, point}) {
 
     return Math.abs(angle) + 90 * (plane - 1);
 }
+// TODO calcDistance should return vector, then can merge with calcAngle
+/**
+ * @param center {Point}
+ * @param point {Point}
+ * @return {Number} distance between two points
+ */
+function calcDistance({center, point}) {
+    const b = point.getX() - center.getX();
+    const a = point.getY() - center.getY();
+    const c = Math.sqrt(b * b + a * a);
+    return c;
+}
 
 /**
  * @param firstVector {Vector}
@@ -85,13 +97,14 @@ function polarToCartesian({center, vector}) {
 export default {
     angleToRadians,
     calcAngle,
+    calcDistance,
     sumVectors,
     polarToCartesian
 }
 
 export {
     angleToRadians,
-    calcAngle,
+    calcDistance,
     sumVectors,
     polarToCartesian
 }

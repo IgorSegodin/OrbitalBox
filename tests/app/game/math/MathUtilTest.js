@@ -122,7 +122,7 @@ describe('MathUtil tests', function () {
          */
         assertVectorEquals(new Vector({value: 8, angle: 67}), MathUtil.sumVectors({
             firstVector: v0,
-            secondVector: v135
+            secondVector: new Vector({value: 10, angle: 133})
         }));
     });
     it('sumVectors test 0-90', function () {

@@ -101,5 +101,14 @@ describe('PhysUtil tests', function () {
         );
     });
 
+    it('calcVelocityChange test 11', function () {
+        assertVectorEquals(new Vector({value: 55, angle: 272}), PhysUtil.calcVelocityChange({
+                velocityVector: new Vector({value: 56, angle: 263}),
+                targetVelocity: new Vector({value: 10, angle: 1.6}),
+                dT: 0.5
+            })
+        );
+    });
+
 
 });

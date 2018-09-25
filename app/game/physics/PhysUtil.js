@@ -15,7 +15,9 @@ function calcVelocityChange({velocityVector, targetVelocity, dT = 1}) {
         console.warn("dT should be between 0 and 1, but was: " + dT);
         dT = 1;
     }
-    let angle = targetVelocity.getAngle() - velocityVector.getAngle();
+    targetVelocity = new Vector({value: targetVelocity.getValue(), angle: 360 + targetVelocity.getAngle()});
+
+    let angle = fixAngle(targetVelocity.getAngle() - velocityVector.getAngle());
 
     let dV;
 
@@ -33,7 +35,7 @@ function calcVelocityChange({velocityVector, targetVelocity, dT = 1}) {
 
     const newValue = velocityVector.getValue() + dV;
     if (newValue < 0) {
-        return new Vector({value: Math.abs(newValue), angle: targetVelocity.getAngle()});
+        return new Vector({value: Math.abs(newValue), angle: fixAngle(targetVelocity.getAngle())});
     } else {
         const influence = targetVelocity.getValue() / velocityVector.getValue();
         return new Vector({value: newValue, angle: fixAngle(velocityVector.getAngle() + dA * dT * influence)});
@@ -45,7 +47,7 @@ function fixAngle(angle) {
     if (result < 0) {
         result = 360 + result;
     }
-    return result;
+    return result % 360;
 }
 
 export default {
