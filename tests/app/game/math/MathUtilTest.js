@@ -19,20 +19,20 @@ function assertPointEquals(expected, real) {
 describe('MathUtil tests', function () {
     const c = new Point({x: 0, y: 0});
 
-    it('calcAngle test 0', function () {
-        assert.equal(0, Math.round(MathUtil.calcAngle({center: c, point: new Point({x: 10, y: 0})})));
+    it('calcDistance test 0', function () {
+        assertVectorEquals(new Vector({value: 10, angle: 0}), MathUtil.calcDistance({center: c, point: new Point({x: 10, y: 0})}));
     });
 
-    it('calcAngle test 22', function () {
-        assert.equal(22, Math.round(MathUtil.calcAngle({center: c, point: new Point({x: 10, y: 4})})));
+    it('calcDistance test 22', function () {
+        assertVectorEquals(new Vector({value: 11, angle: 22}), MathUtil.calcDistance({center: c, point: new Point({x: 10, y: 4})}));
     });
 
-    it('calcAngle test 45', function () {
-        assert.equal(45, Math.round(MathUtil.calcAngle({center: c, point: new Point({x: 10, y: 10})})));
+    it('calcDistance test 45', function () {
+        assertVectorEquals(new Vector({value: 14, angle: 45}), MathUtil.calcDistance({center: c, point: new Point({x: 10, y: 10})}));
     });
 
-    it('calcAngle test 68', function () {
-        assert.equal(68, Math.round(MathUtil.calcAngle({center: c, point: new Point({x: 4, y: 10})})));
+    it('calcDistance test 68', function () {
+        assertVectorEquals(new Vector({value: 11, angle: 68}), MathUtil.calcDistance({center: c, point: new Point({x: 4, y: 10})}));
     });
 
     it('calcAngle test 90', function () {
@@ -179,6 +179,13 @@ describe('MathUtil tests', function () {
         assertVectorEquals(new Vector({value: 14, angle: 225}), MathUtil.sumVectors({
             firstVector: v180,
             secondVector: v270
+        }));
+    });
+
+    it('sumVectors test 01', function () {
+        assertVectorEquals(new Vector({value: 55, angle: 273}), MathUtil.sumVectors({
+            firstVector: new Vector({value: 56, angle: 263}),
+            secondVector: new Vector({value: 10, angle: 1.6})
         }));
     });
 

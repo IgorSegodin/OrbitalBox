@@ -3,42 +3,50 @@ import {fabric} from 'fabric';
 // import DollarImage from 'dollar.png';
 // import {promiseImage} from 'util/FabricUtil';
 import Vector from 'game/math/Vector'
+import PhysUtil from 'game/physics/PhysUtil';
 
 function random(min, max) {
     return Math.floor((Math.random() * max) + min);
 }
 
-// 1m == 100px
-
 function generateWorld(width, height) {
+
+    const EARTH_RADIUS = PhysUtil.EARTH_RADIUS * Math.pow(10, -6);
+    const MOON_RADIUS = PhysUtil.MOON_RADIUS * Math.pow(10, -6);
+    const EARTH_TO_MOON_DISTANCE = PhysUtil.EARTH_TO_MOON_DISTANCE * Math.pow(10, -6);
 
     const objects = [];
 
     objects.push(
         new fabric.Circle({
-            left: (width / 2) - 50,
-            top: (height / 2) - 50,
-            fill: 'black',
-            radius: 50,
+            left: (width / 2) - EARTH_RADIUS,
+            top: (height / 2) - EARTH_RADIUS,
+            fill: 'green',
+            radius: EARTH_RADIUS,
             gameData: {
                 name: "Earth",
-                gravityForce: 10, // m/s^2
-                static: true
+            },
+            physicsData: {
+                static: true,
+                mass: PhysUtil.EARTH_MASS,
             }
         })
     );
 
     objects.push(
         new fabric.Circle({
-            left: (width / 2) - 10 + 250,
-            top: (height / 2) - 10,
+            left: (width / 2) - MOON_RADIUS + EARTH_TO_MOON_DISTANCE,
+            top: (height / 2) - MOON_RADIUS,
             fill: 'gray',
-            radius: 10,
+            radius: MOON_RADIUS,
             gameData: {
                 name: "Moon",
+            },
+            physicsData: {
+                mass: PhysUtil.MOON_MASS,
                 velocityVector: new Vector({
-                    value: 50,
-                    angle: 100
+                    value: PhysUtil.MOON_VELOCITY_AROUND_EARTH,
+                    angle: 90
                 })
             }
         })

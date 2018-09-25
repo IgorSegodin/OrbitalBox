@@ -5,27 +5,15 @@ import PhysUtil from 'game/physics/PhysUtil';
 import Point from 'game/math/Point';
 import Vector from 'game/math/Vector';
 
-
-// TODO calc dV, dA for each force vector
-
-// TODO use more real formulas for calculating gravity F
-
-// F = G * m1 * m2 / r^2
-
-// V = V - g * dT^2 / 2
-
-// G = 6.7385 * 10^(-11) = м^3 / (кг * с^2)
-
-
-
 function simulateWorld(world, dT) {
-    dT = dT / 1000; // seconds
+    // dT = dT / 1000; // seconds
+    dT = dT * 100; // seconds
 
     for (let obj of world.objects) {
 
-        const gameData = obj.get("gameData");
+        const physicsData = obj.get("physicsData");
 
-        if (gameData.static) {
+        if (physicsData.static) {
             continue;
         }
 
@@ -34,64 +22,75 @@ function simulateWorld(world, dT) {
 
         const objPoint = getObjectPoint({object: obj, world});
 
-        let velocityVector = gameData.velocityVector || new Vector({value: 0, angle: 0});
-
-        let dV = 0;
-        let dA = 0;
-
-        const initialVelocity = velocityVector;
-        let gForce;
+        let velocityVector = physicsData.velocityVector || new Vector({value: 0, angle: 0});
 
         for (let otherObj of objects) {
-            const otherGameData = otherObj.get("gameData");
-            if (!otherGameData.gravityForce) {
+            const otherPhysicsData = otherObj.get("physicsData");
+            if (!otherPhysicsData.mass) {
                 continue;
             }
 
             const otherObjPoint = getObjectPoint({object: otherObj, world});
 
-            const gravityVectorAngle = MathUtil.calcAngle({center: objPoint, point: otherObjPoint});
+            const distanceVector = MathUtil.calcDistance({center: objPoint, point: otherObjPoint});
 
-            const gravityVector = new Vector({value: otherGameData.gravityForce, angle: gravityVectorAngle});
+            let distance = pixelToMeter(distanceVector.getValue());
 
-            gForce = gravityVector;
-
-            velocityVector = PhysUtil.calcVelocityChange({
-                velocityVector: velocityVector,
-                targetVelocity: gravityVector,
-                dT: dT
+            const Fg = PhysUtil.calcGravityForce({
+                m1: otherPhysicsData.mass,
+                m2: physicsData.mass,
+                distance: distance
             });
 
-            const distance = MathUtil.calcDistance({center: objPoint, point: otherObjPoint});
+            const g = PhysUtil.calcGravityAcceleration({force: Fg, m2: physicsData.mass});
+
+            const gravityVector = new Vector({value: g * dT, angle: distanceVector.getAngle()});
+
+            velocityVector = MathUtil.sumVectors({
+                firstVector: velocityVector,
+                secondVector: gravityVector,
+            });
+
             world.infoText.set({text: `R: ${Math.round(distance)} \r\nV: ${Math.round(velocityVector.getValue())}`});
         }
 
-        gameData.velocityVector = velocityVector;
+        physicsData.velocityVector = velocityVector;
 
-        const finalDirectionVector = new Vector({value: gameData.velocityVector.getValue() * dT, angle: gameData.velocityVector.getAngle()});
+        const finalDirectionVector = new Vector({
+            value: meterToPixel(physicsData.velocityVector.getValue() * dT),
+            angle: physicsData.velocityVector.getAngle()
+        });
 
         const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
 
-        console.log(`Velocity ${initialVelocity}, ${gameData.velocityVector}, Point ${objPoint}, ${newObjPoint}, Force ${gForce}`);
+        console.log(`Velocity ${physicsData.velocityVector}, Point ${newObjPoint}`);
 
         setObjectPoint({point: newObjPoint, object: obj, world: world});
 
         if (world.input[MOVE_UP]) {
-            gameData.velocityVector = new Vector({
-                    value: gameData.velocityVector.getValue() + 100 * dT,
-                angle:gameData.velocityVector.getAngle()
+            physicsData.velocityVector = new Vector({
+                value: physicsData.velocityVector.getValue() + 100 * dT,
+                angle: physicsData.velocityVector.getAngle()
             });
         }
 
         if (world.input[MOVE_DOWN]) {
-            gameData.velocityVector = new Vector({
-                value: gameData.velocityVector.getValue() - 100 * dT,
-                angle:gameData.velocityVector.getAngle()
+            physicsData.velocityVector = new Vector({
+                value: physicsData.velocityVector.getValue() - 100 * dT,
+                angle: physicsData.velocityVector.getAngle()
             });
         }
 
     }
 
+}
+
+function pixelToMeter(pixels) {
+    return pixels * Math.pow(10, 6);
+}
+
+function meterToPixel(meters) {
+    return meters * Math.pow(10, -6);
 }
 
 /**

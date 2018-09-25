@@ -9,12 +9,30 @@ function radiansToAngle(radians) {
     return radians * 180 / Math.PI;
 }
 
+function fixAngle(angle) {
+    let result = angle;
+    if (result < 0) {
+        result = 360 + result;
+    }
+    return result % 360;
+}
+
 /**
  * @param center {Point}
  * @param point {Point}
  * @return {Number} counter clockwise from positive X axis, degrees
+ * @deprecated use {@link #calcDistance}
  */
 function calcAngle({center, point}) {
+    return calcDistance({center, point}).getAngle();
+}
+
+/**
+ * @param center {Point}
+ * @param point {Point}
+ * @return {Vector} distance and angle between two points
+ */
+function calcDistance({center, point}) {
     const b = point.getX() - center.getX();
     const a = point.getY() - center.getY();
     const c = Math.sqrt(b * b + a * a);
@@ -30,20 +48,9 @@ function calcAngle({center, point}) {
     }
 
     let angle = radiansToAngle(Math.asin((plane === 1 || plane === 3 ? a : b) / c));
+    angle = Math.abs(angle) + 90 * (plane - 1);
 
-    return Math.abs(angle) + 90 * (plane - 1);
-}
-// TODO calcDistance should return vector, then can merge with calcAngle
-/**
- * @param center {Point}
- * @param point {Point}
- * @return {Number} distance between two points
- */
-function calcDistance({center, point}) {
-    const b = point.getX() - center.getX();
-    const a = point.getY() - center.getY();
-    const c = Math.sqrt(b * b + a * a);
-    return c;
+    return new Vector({value: c, angle: angle});
 }
 
 /**
@@ -52,14 +59,10 @@ function calcDistance({center, point}) {
  * @return {Vector}
  */
 function sumVectors({firstVector, secondVector}) {
-    // first always has smaller angle
-    if (firstVector.getAngle() > secondVector.getAngle()) {
-        const tmp = secondVector;
-        secondVector = firstVector;
-        firstVector = tmp;
-    }
+    secondVector = new Vector({value: secondVector.getValue(), angle: 360 + secondVector.getAngle()});
 
-    let angle = secondVector.getAngle() - firstVector.getAngle();
+
+    let angle = fixAngle(secondVector.getAngle() - firstVector.getAngle());
 
     const sumVal = Math.sqrt(
         Math.pow(firstVector.getValue(), 2) +
@@ -79,7 +82,7 @@ function sumVectors({firstVector, secondVector}) {
 
     resultAngle += angle <= 180 ? firstVector.getAngle() : secondVector.getAngle();
 
-    return new Vector({value: sumVal, angle: resultAngle});
+    return new Vector({value: sumVal, angle: fixAngle(resultAngle)});
 }
 
 /**
@@ -104,6 +107,7 @@ export default {
 
 export {
     angleToRadians,
+    calcAngle,
     calcDistance,
     sumVectors,
     polarToCartesian

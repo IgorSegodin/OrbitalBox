@@ -1,59 +1,47 @@
-import MathUtil from 'game/math/MathUtil';
-import Point from 'game/math/Point';
-import Vector from 'game/math/Vector';
+const GRAVITATIONAL_CONSTANT = 6.67408 * Math.pow(10, -11); // (m^3 / (kg * sec^2))
 
-// TODO fix horrible peace of sh*t
+const EARTH_MASS = 5.972 * Math.pow(10, 24); // (kg)
+const EARTH_RADIUS = 6.371 * Math.pow(10, 6); // (m)
+
+const EARTH_TO_MOON_DISTANCE = 384.4 * Math.pow(10, 6); // (m)
+
+const MOON_MASS = 7.34767309 * Math.pow(10, 22); // (kg)
+const MOON_RADIUS = 1.737 * Math.pow(10, 6); // (m)
+const MOON_VELOCITY_AROUND_EARTH = 1022; // (m/sec)
 
 /**
- * @param velocityVector {Vector}
- * @param targetVelocity {Vector}
- * @param dT {Number} optional
- * @return {Vector}
+ * F = G * m1 * m2 / r^2
+ * @param m1 {Number} mass of first object (kg)
+ * @param m2 {Number} mass of second object (kg)
+ * @param distance {Number} between centers of mass (m)
+ * @return {number} force value (kg*m/sec^2)
  */
-function calcVelocityChange({velocityVector, targetVelocity, dT = 1}) {
-    if (dT > 1) {
-        console.warn("dT should be between 0 and 1, but was: " + dT);
-        dT = 1;
-    }
-    targetVelocity = new Vector({value: targetVelocity.getValue(), angle: 360 + targetVelocity.getAngle()});
-
-    let angle = fixAngle(targetVelocity.getAngle() - velocityVector.getAngle());
-
-    let dV;
-
-    let dA = angle;
-    if (dA > 180) {
-        dA = dA - 360;
-    }
-
-    if (dA === 180) {
-        dV = - (velocityVector.getValue() + targetVelocity.getValue()) * dT;
-        dA = 0;
-    } else {
-        dV = targetVelocity.getValue() * Math.cos(MathUtil.angleToRadians(angle)) * dT;
-    }
-
-    const newValue = velocityVector.getValue() + dV;
-    if (newValue < 0) {
-        return new Vector({value: Math.abs(newValue), angle: fixAngle(targetVelocity.getAngle())});
-    } else {
-        const influence = targetVelocity.getValue() / velocityVector.getValue();
-        return new Vector({value: newValue, angle: fixAngle(velocityVector.getAngle() + dA * dT * influence)});
-    }
+function calcGravityForce({m1, m2 = 1, distance}) {
+    return GRAVITATIONAL_CONSTANT * m1 * m2 / Math.pow(distance, 2);
 }
 
-function fixAngle(angle) {
-    let result = angle;
-    if (result < 0) {
-        result = 360 + result;
-    }
-    return result % 360;
+/**
+ * g = F / m
+ * @param force {Number} (kg*m/sec^2)
+ * @param m2 {Number} (kg)
+ * @return {Number} (m/sec^2)
+ */
+function calcGravityAcceleration({force, m2}) {
+    return force / m2;
 }
 
 export default {
-    calcVelocityChange
+    calcGravityForce,
+    calcGravityAcceleration,
+    EARTH_MASS,
+    EARTH_RADIUS,
+    EARTH_TO_MOON_DISTANCE,
+    MOON_MASS,
+    MOON_RADIUS,
+    MOON_VELOCITY_AROUND_EARTH
 }
 
 export {
-    calcVelocityChange
+    calcGravityForce,
+    calcGravityAcceleration
 }

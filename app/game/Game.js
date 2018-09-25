@@ -42,7 +42,7 @@ class Game {
                 simulateTranslation(this.canvas.getObjects(), world);
                 this.canvas.renderAll();
                 t0 = t1;
-            }, 200);
+            }, 1);
         });
     }
 
