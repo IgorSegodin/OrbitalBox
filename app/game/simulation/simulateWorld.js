@@ -6,8 +6,12 @@ import Point from 'game/math/Point';
 import Vector from 'game/math/Vector';
 
 function simulateWorld(world, dT) {
-    // dT = dT / 1000; // seconds
-    dT = dT * 100; // seconds
+    dT = dT / 1000; // seconds
+    dT = dT * world.timeMultiplier; // multiplier
+
+    // TODO draw additional controls on UI (time multiplier etc.)
+    // TODO calculate for multiple objects
+    // TODO Draw orbit ellipse
 
     for (let obj of world.objects) {
 
@@ -51,7 +55,7 @@ function simulateWorld(world, dT) {
                 secondVector: gravityVector,
             });
 
-            world.infoText.set({text: `R: ${Math.round(distance)} \r\nV: ${Math.round(velocityVector.getValue())}`});
+            world.infoText.set({text: `R: ${Math.round(distance)} m \r\nV: ${Math.round(velocityVector.getValue())} m/s`});
         }
 
         physicsData.velocityVector = velocityVector;
@@ -63,20 +67,18 @@ function simulateWorld(world, dT) {
 
         const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
 
-        console.log(`Velocity ${physicsData.velocityVector}, Point ${newObjPoint}`);
-
         setObjectPoint({point: newObjPoint, object: obj, world: world});
 
         if (world.input[MOVE_UP]) {
             physicsData.velocityVector = new Vector({
-                value: physicsData.velocityVector.getValue() + 100 * dT,
+                value: physicsData.velocityVector.getValue() + 1,
                 angle: physicsData.velocityVector.getAngle()
             });
         }
 
         if (world.input[MOVE_DOWN]) {
             physicsData.velocityVector = new Vector({
-                value: physicsData.velocityVector.getValue() - 100 * dT,
+                value: physicsData.velocityVector.getValue() - 1,
                 angle: physicsData.velocityVector.getAngle()
             });
         }

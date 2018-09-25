@@ -24,6 +24,12 @@ class Game {
 
             this.clear();
 
+            world.timeMultiplier = 0;
+
+            window.setTimeMultiplier = function(value) {
+                world.timeMultiplier = value < 0 ? 1 : value;
+            };
+
             for (let obj of world.objects) {
                 this.canvas.add(obj);
             }
