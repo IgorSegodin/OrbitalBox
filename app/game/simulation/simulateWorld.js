@@ -7,7 +7,6 @@ import Vector from 'game/math/Vector';
 
 function simulateWorld(world, dT) {
     dT = dT / 1000; // seconds
-    dT = dT * world.timeMultiplier; // multiplier
 
     // TODO draw additional controls on UI (time multiplier etc.)
     // TODO calculate for multiple objects

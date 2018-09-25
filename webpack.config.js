@@ -33,7 +33,8 @@ module.exports = {
             title: 'Orbital box',
             inject: 'head',
             favicon: path.resolve(input, "favico.ico"),
-            hash: true
+            hash: true,
+            template: path.resolve(input, "index.html")
         }),
         // new UglifyJSPlugin({
         // 	sourceMap: true

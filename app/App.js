@@ -2,10 +2,20 @@ import 'style.css';
 import Game from 'game/Game';
 
 document.addEventListener("DOMContentLoaded", function () {
+    const canvasEl = document.getElementById('canvas');
 
-    const canvasEl = document.createElement('canvas');
+    const game = new Game({canvasEl});
 
-    new Game(canvasEl).init();
+    const timeMultiplierEl = document.getElementById('timeMultiplier');
+    const timeMultiplierLabelEl = document.getElementById('timeMultiplierLabel');
 
-    document.body.appendChild(canvasEl);
+    timeMultiplierLabelEl.innerText = timeMultiplierEl.value;
+    game.setTimeMultiplier(timeMultiplierEl.value);
+
+    timeMultiplierEl.oninput = function() {
+        timeMultiplierLabelEl.innerText = timeMultiplierEl.value;
+        game.setTimeMultiplier(timeMultiplierEl.value);
+    };
+
+    game.init();
 });

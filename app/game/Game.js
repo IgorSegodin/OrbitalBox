@@ -9,10 +9,11 @@ import canvasListener from 'game/input/canvasListener';
 
 class Game {
 
-    constructor(canvasEl) {
+    constructor({canvasEl}) {
+        this.timeMultiplier = 1;
         this.canvas = new fabric.Canvas(canvasEl);
-        this.canvas.setHeight(window.innerHeight * 0.98);
-        this.canvas.setWidth(window.innerWidth * 0.98);
+        this.canvas.setHeight(window.innerHeight - 2);
+        this.canvas.setWidth(canvasEl.parentNode.parentNode.clientWidth - 2);
     }
 
     init() {
@@ -20,6 +21,7 @@ class Game {
     }
 
     start() {
+        const thisGame = this;
         generateWorld(this.canvas.getWidth(), this.canvas.getHeight()).then((world) => {
 
             this.clear();
@@ -44,11 +46,12 @@ class Game {
 
             this.interval = setInterval(() => {
                 const t1 = timer.getTime();
-                simulateWorld(world, t1 - t0);
+                const dT = (t1 - t0) * thisGame.timeMultiplier;
+                simulateWorld(world, dT);
                 simulateTranslation(this.canvas.getObjects(), world);
                 this.canvas.renderAll();
                 t0 = t1;
-            }, 1);
+            }, 10);
         });
     }
 
@@ -60,6 +63,10 @@ class Game {
         }
 
         this.canvas.clear();
+    }
+
+    setTimeMultiplier(value) {
+        this.timeMultiplier = value;
     }
 
 }
