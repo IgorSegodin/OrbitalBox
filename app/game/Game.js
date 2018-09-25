@@ -1,5 +1,6 @@
 import {fabric} from 'fabric';
 
+import Timer from 'game/world/Timer';
 import generateWorld from 'game/world/generateWorld';
 import simulateWorld from 'game/simulation/simulateWorld';
 import simulateTranslation from 'game/simulation/simulateTranslation';
@@ -31,16 +32,17 @@ class Game {
             inputListener(world);
             canvasListener(this.canvas.getElement(), world);
 
-            // TODO separate timer for internal clock, to use it instead of real computer time;
-            let t0 = new Date().getTime();
+            const timer = new Timer();
+
+            let t0 = timer.getTime();
 
             this.interval = setInterval(() => {
-                const t1 = new Date().getTime();
+                const t1 = timer.getTime();
                 simulateWorld(world, t1 - t0);
                 simulateTranslation(this.canvas.getObjects(), world);
                 this.canvas.renderAll();
                 t0 = t1;
-            }, 200);
+            }, 1);
         });
     }
 

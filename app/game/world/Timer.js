@@ -1,1 +1,20 @@
-// TODO need this timer to be able to pause game, should not rely on system time.
+class Timer {
+
+    constructor(props) {
+        props = Object.assign({delay: 10}, props);
+
+        this.time = 0;
+
+        const thisClass = this;
+        this.interval = setInterval(function () {
+            thisClass.time = thisClass.time + props.delay;
+        }, props.delay);
+    }
+
+    getTime() {
+        return this.time;
+    }
+
+}
+
+export default Timer
