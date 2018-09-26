@@ -29,7 +29,11 @@ function generateWorld(width, height) {
             physicsData: {
                 static: true,
                 mass: PhysUtil.EARTH_MASS,
-            }
+            },
+
+            selectable: true,
+            hasControls: false,
+            hasBorders: false,
         })
     );
 
@@ -48,7 +52,9 @@ function generateWorld(width, height) {
                     value: PhysUtil.MOON_VELOCITY_AROUND_EARTH,
                     angle: 90
                 })
-            }
+            },
+
+            selectable: false
         })
     );
 

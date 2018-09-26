@@ -12,6 +12,8 @@ class Game {
     constructor({canvasEl}) {
         this.timeMultiplier = 1;
         this.canvas = new fabric.Canvas(canvasEl);
+        this.canvas.selection = false;
+
         this.canvas.setHeight(window.innerHeight - 2);
         this.canvas.setWidth(canvasEl.parentNode.parentNode.clientWidth - 2);
     }
