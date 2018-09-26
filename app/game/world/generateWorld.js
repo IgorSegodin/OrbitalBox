@@ -1,28 +1,28 @@
 import {fabric} from 'fabric';
-// import PekaImage from 'peka.png';
-// import DollarImage from 'dollar.png';
-// import {promiseImage} from 'util/FabricUtil';
+
 import Vector from 'game/math/Vector'
 import PhysUtil from 'game/physics/PhysUtil';
+
+import {promiseImage} from 'util/FabricUtil';
+import EarthImage from 'game/resources/images/planets/04earth.png';
+import MoonImage from 'game/resources/images/planets/05moon.png';
 
 function random(min, max) {
     return Math.floor((Math.random() * max) + min);
 }
+const SCALE = Math.pow(10, -6) * 2;
 
-function generateWorld(width, height) {
+const EARTH_RADIUS = PhysUtil.EARTH_RADIUS * SCALE;
+const MOON_RADIUS = PhysUtil.MOON_RADIUS * SCALE;
+const EARTH_TO_MOON_DISTANCE = PhysUtil.EARTH_TO_MOON_DISTANCE * Math.pow(10, -6);
 
-    const EARTH_RADIUS = PhysUtil.EARTH_RADIUS * Math.pow(10, -6);
-    const MOON_RADIUS = PhysUtil.MOON_RADIUS * Math.pow(10, -6);
-    const EARTH_TO_MOON_DISTANCE = PhysUtil.EARTH_TO_MOON_DISTANCE * Math.pow(10, -6);
-
-    const objects = [];
-
-    objects.push(
-        new fabric.Circle({
+function promiseEarthObject({width, height}) {
+    return promiseImage(EarthImage).then(function (earth) {
+        earth.set({
             left: (width / 2) - EARTH_RADIUS,
             top: (height / 2) - EARTH_RADIUS,
-            fill: 'green',
-            radius: EARTH_RADIUS,
+            width: EARTH_RADIUS * 2,
+            height: EARTH_RADIUS * 2,
             gameData: {
                 name: "Earth",
             },
@@ -33,16 +33,20 @@ function generateWorld(width, height) {
 
             selectable: true,
             hasControls: false,
-            hasBorders: false,
-        })
-    );
+            hasBorders: false
+        });
 
-    objects.push(
-        new fabric.Circle({
+        return earth;
+    });
+}
+
+function promiseMoonObject({width, height}) {
+    return promiseImage(MoonImage).then(function (earth) {
+        earth.set({
             left: (width / 2) - MOON_RADIUS + EARTH_TO_MOON_DISTANCE,
             top: (height / 2) - MOON_RADIUS,
-            fill: 'gray',
-            radius: MOON_RADIUS,
+            width: MOON_RADIUS * 2,
+            height: MOON_RADIUS * 2,
             gameData: {
                 name: "Moon",
             },
@@ -55,10 +59,14 @@ function generateWorld(width, height) {
             },
 
             selectable: false
-        })
-    );
+        });
 
-    return new Promise((resolve, reject) => {
+        return earth;
+    });
+}
+
+function generateWorld(width, height) {
+    return Promise.all([promiseEarthObject({width, height}), promiseMoonObject({width, height})]).then((objects) => {
         const world = {
             width: width,
             height: height,
@@ -72,8 +80,7 @@ function generateWorld(width, height) {
             },
             eventCallbacks: {}
         };
-
-        resolve(world);
+        return world;
     });
 }
 
