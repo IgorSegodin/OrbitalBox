@@ -1,4 +1,7 @@
+// TODO move to fabric package
+
 import {fabric} from 'fabric';
+import Point from 'game/math/Point';
 
 function Rgba(red, green, blue, alpha) {
     let r = Math.round(+red);
@@ -50,6 +53,17 @@ function promiseImage(imageUrl) {
     });
 }
 
+function promiseRawImage(imageUrl) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.onload = function () {
+            resolve(img);
+        };
+        img.src = imageUrl;
+    });
+}
+
 /**
  * @param obj1 {Object}
  * @param obj2 {Object}
@@ -98,8 +112,49 @@ function parseRgba(valueString) {
     return new Rgba(result[1], result[2], result[3], result[4]);
 }
 
+/**
+ * @param object
+ * @param world
+ * @return {Point}
+ */
+function getObjectPoint({object, world}) {
+    const top = object.get("top");
+    const left = object.get("left");
+    const width = object.getWidth();
+    const height = object.getHeight();
+
+    return new Point({
+        x: left + width / 2,
+        y: world.height - top - height / 2
+    });
+}
+
+/**
+ * @param point {Point}
+ * @param object {Object}
+ * @param world {Object}
+ */
+function setObjectPoint({point, object, world}) {
+    object.set({
+        left: point.getX() - object.getWidth() / 2,
+        top: world.height - point.getY() - object.getHeight() / 2
+    });
+}
+
+function pixelToMeter(pixels) {
+    return pixels * Math.pow(10, 6);
+}
+
+function meterToPixel(meters) {
+    return meters * Math.pow(10, -6);
+}
+
 export {
+    pixelToMeter,
+    meterToPixel,
+    setObjectPoint,
     promiseImage,
+    promiseRawImage,
     isIntersected,
     containPoint,
     Rgba,

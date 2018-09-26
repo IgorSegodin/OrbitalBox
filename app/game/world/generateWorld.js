@@ -1,76 +1,58 @@
 import {fabric} from 'fabric';
 
+import Point from 'game/math/Point'
 import Vector from 'game/math/Vector'
 import PhysUtil from 'game/physics/PhysUtil';
 
-import {promiseImage} from 'util/FabricUtil';
+import ObjectData from 'game/data/ObjectData';
+import PhysicsData from 'game/data/PhysicsData';
+import objectTypes from 'game/data/objectTypes';
+
+import {generateId} from 'game/world/generateId';
+
 import EarthImage from 'game/resources/images/planets/04earth.png';
 import MoonImage from 'game/resources/images/planets/05moon.png';
 
-function random(min, max) {
-    return Math.floor((Math.random() * max) + min);
-}
-const SCALE = Math.pow(10, -6) * 2;
-
-const EARTH_RADIUS = PhysUtil.EARTH_RADIUS * SCALE;
-const MOON_RADIUS = PhysUtil.MOON_RADIUS * SCALE;
-const EARTH_TO_MOON_DISTANCE = PhysUtil.EARTH_TO_MOON_DISTANCE * Math.pow(10, -6);
-
-function promiseEarthObject({width, height}) {
-    return promiseImage(EarthImage).then(function (earth) {
-        earth.set({
-            left: (width / 2) - EARTH_RADIUS,
-            top: (height / 2) - EARTH_RADIUS,
-            width: EARTH_RADIUS * 2,
-            height: EARTH_RADIUS * 2,
-            gameData: {
-                name: "Earth",
-            },
-            physicsData: {
-                static: true,
-                mass: PhysUtil.EARTH_MASS,
-            },
-
-            selectable: true,
-            hasControls: false,
-            hasBorders: false
-        });
-
-        return earth;
-    });
-}
-
-function promiseMoonObject({width, height}) {
-    return promiseImage(MoonImage).then(function (earth) {
-        earth.set({
-            left: (width / 2) - MOON_RADIUS + EARTH_TO_MOON_DISTANCE,
-            top: (height / 2) - MOON_RADIUS,
-            width: MOON_RADIUS * 2,
-            height: MOON_RADIUS * 2,
-            gameData: {
-                name: "Moon",
-            },
-            physicsData: {
-                mass: PhysUtil.MOON_MASS,
-                velocityVector: new Vector({
-                    value: PhysUtil.MOON_VELOCITY_AROUND_EARTH,
-                    angle: 90
-                })
-            },
-
-            selectable: false
-        });
-
-        return earth;
-    });
-}
-
 function generateWorld(width, height) {
-    return Promise.all([promiseEarthObject({width, height}), promiseMoonObject({width, height})]).then((objects) => {
+    return new Promise(function (resolve, reject) {
         const world = {
             width: width,
             height: height,
-            objects: objects,
+            objects: [
+                new ObjectData({
+                    id: generateId(),
+                    name: "Earth",
+                    type: objectTypes.PLANET,
+                    position: new Point({x: 0, y: 0}),
+                    physicsData: new PhysicsData({
+                        mass: PhysUtil.EARTH_MASS,
+                        velocityVector: null
+                    }),
+                    properties: {
+                        radius: PhysUtil.EARTH_RADIUS,
+                        image: EarthImage,
+                        static: true
+                    }
+                }),
+
+                new ObjectData({
+                    id: generateId(),
+                    name: "Moon",
+                    type: objectTypes.PLANET,
+                    position: new Point({x: PhysUtil.EARTH_TO_MOON_DISTANCE, y: 0}),
+                    physicsData: new PhysicsData({
+                        mass: PhysUtil.MOON_MASS,
+                        velocityVector: new Vector({
+                            value: PhysUtil.MOON_VELOCITY_AROUND_EARTH,
+                            angle: 90
+                        })
+                    }),
+                    properties: {
+                        radius: PhysUtil.MOON_RADIUS,
+                        image: MoonImage
+                    }
+                }),
+            ],
             infoText: getInfoTextObject(),
             input: {},
             cursor: {
@@ -80,7 +62,7 @@ function generateWorld(width, height) {
             },
             eventCallbacks: {}
         };
-        return world;
+        resolve(world);
     });
 }
 

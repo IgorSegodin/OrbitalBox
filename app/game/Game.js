@@ -7,6 +7,8 @@ import simulateTranslation from 'game/simulation/simulateTranslation';
 import inputListener from 'game/input/inputListener';
 import canvasListener from 'game/input/canvasListener';
 
+import objectTransformer from 'fabric/objectTransformer';
+
 class Game {
 
     constructor({canvasEl}) {
@@ -24,20 +26,15 @@ class Game {
 
     start() {
         const thisGame = this;
-        generateWorld(this.canvas.getWidth(), this.canvas.getHeight()).then((world) => {
+
+        Promise.all([
+            objectTransformer.promise(),
+            generateWorld(this.canvas.getWidth(), this.canvas.getHeight())
+        ]).then((values) => {
+            const objectTransformer = values[0];
+            const world = values[1];
 
             this.clear();
-
-            world.timeMultiplier = 0;
-
-            window.setTimeMultiplier = function(value) {
-                world.timeMultiplier = value < 0 ? 1 : value;
-            };
-
-            for (let obj of world.objects) {
-                this.canvas.add(obj);
-            }
-            this.canvas.add(world.infoText);
 
             inputListener(world);
             canvasListener(this.canvas.getElement(), world);
@@ -51,7 +48,21 @@ class Game {
                 const dT = (t1 - t0) * thisGame.timeMultiplier;
                 simulateWorld(world, dT);
                 simulateTranslation(this.canvas.getObjects(), world);
+
+                this.canvas.clear();
+
+                for (let obj of world.objects) {
+                    this.canvas.add(
+                        objectTransformer.transform({
+                            objectData: obj,
+                            world
+                        })
+                    );
+                }
+                this.canvas.add(world.infoText);
+
                 this.canvas.renderAll();
+
                 t0 = t1;
             }, 10);
         });
