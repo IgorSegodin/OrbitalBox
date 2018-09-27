@@ -8,6 +8,12 @@ import Vector from 'game/math/Vector';
 function simulateWorld(world, dT) {
     dT = dT / 1000; // seconds
 
+    if (dT === 0) {
+        return;
+    }
+
+    const simData = {};
+
     for (let obj of world.objects) {
 
         const physicsData = obj.getPhysicsData();
@@ -21,7 +27,7 @@ function simulateWorld(world, dT) {
 
         const objPoint = obj.getPosition();
 
-        let velocityVector = physicsData.getVelocity() || new Vector({value: 0, angle: 0});
+        let velocityVector = physicsData.getVelocity() || new Vector({value: 0.001, angle: 0});
 
         for (let otherObj of objects) {
             const otherPhysicsData = otherObj.getPhysicsData();
@@ -50,21 +56,24 @@ function simulateWorld(world, dT) {
                 secondVector: gravityVector,
             });
 
-            world.infoText.set({text: `R: ${Math.round(distance)} m \r\nV: ${Math.round(velocityVector.getValue())} m/s`});
+            if (obj.getName() === "Moon") {
+                world.infoText.set({text: `R: ${Math.round(distance)} m \r\nV: ${Math.round(velocityVector.getValue())} m/s`});
+            }
         }
+        if (obj.getName() === "Moon") {
+            if (world.input[MOVE_UP]) {
+                velocityVector = new Vector({
+                    value: velocityVector.getValue() + 1,
+                    angle: velocityVector.getAngle()
+                });
+            }
 
-        if (world.input[MOVE_UP]) {
-            velocityVector = new Vector({
-                value: velocityVector.getValue() + 1,
-                angle: velocityVector.getAngle()
-            });
-        }
-
-        if (world.input[MOVE_DOWN]) {
-            velocityVector = new Vector({
-                value: velocityVector.getValue() - 1,
-                angle: velocityVector.getAngle()
-            });
+            if (world.input[MOVE_DOWN]) {
+                velocityVector = new Vector({
+                    value: velocityVector.getValue() - 1,
+                    angle: velocityVector.getAngle()
+                });
+            }
         }
 
         const finalDirectionVector = new Vector({
@@ -73,9 +82,20 @@ function simulateWorld(world, dT) {
         });
         const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
 
-        physicsData.setVelocity(velocityVector);
-        obj.setPosition(newObjPoint);
+        console.log(`${obj.getName()} ${newObjPoint} ${velocityVector}`);
+
+        simData[obj.getId()] = {
+            velocityVector,
+            position: newObjPoint,
+            object: obj
+        };
     }
+
+    Object.keys(simData).forEach(k => {
+        const data = simData[k];
+        data.object.getPhysicsData().setVelocity(data.velocityVector);
+        data.object.setPosition(data.position);
+    });
 
 }
 

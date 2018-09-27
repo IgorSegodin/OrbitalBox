@@ -189,6 +189,14 @@ describe('MathUtil tests', function () {
         }));
     });
 
+    it('sumVectors test 02', function () {
+        // TODO fix util
+        assertVectorEquals(new Vector({value: 0, angle: 0}), MathUtil.sumVectors({
+            firstVector: new Vector({value: 500, angle: 270}),
+            secondVector: new Vector({value: 0.0004, angle: 180})
+        }));
+    });
+
     it('polarToCartesian test 01', function () {
         assertPointEquals(new Point({x: 10, y: 0}), MathUtil.polarToCartesian({center: c, vector: v0}));
     });

@@ -26,12 +26,14 @@ function promiseImages() {
 function transformInternal({objectData, images}) {
     const props = objectData.getProperties();
 
+    const radiusInPixel = Math.max(meterToPixel(props.radius), 2); // min radius is 2 pixels
+
     const img = images[props.image];
 
     const object = new fabric.Image(img);
     object.set({
-        width: meterToPixel(props.radius) * 2,
-        height: meterToPixel(props.radius) * 2,
+        width: radiusInPixel * 2,
+        height: radiusInPixel * 2,
 
         selectable: false,
         hasControls: false,

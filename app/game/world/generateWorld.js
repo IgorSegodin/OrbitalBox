@@ -26,32 +26,54 @@ function generateWorld(width, height) {
                     position: new Point({x: 0, y: 0}),
                     physicsData: new PhysicsData({
                         mass: PhysUtil.EARTH_MASS,
-                        velocityVector: null
+                        velocityVector: new Vector({
+                            value: 500,
+                            angle: 270
+                        })
                     }),
                     properties: {
                         radius: PhysUtil.EARTH_RADIUS,
                         image: EarthImage,
-                        static: true
+                        // static: true
                     }
                 }),
 
                 new ObjectData({
                     id: generateId(),
-                    name: "Moon",
+                    name: "Earth2",
                     type: objectTypes.PLANET,
-                    position: new Point({x: PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
+                    position: new Point({x: -PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
                     physicsData: new PhysicsData({
-                        mass: PhysUtil.MOON_MASS,
+                        mass: PhysUtil.EARTH_MASS,
                         velocityVector: new Vector({
-                            value: PhysUtil.MOON_AROUND_EARTH_PERIGEE_VELOCITY,
+                            value: 500,
                             angle: 90
                         })
                     }),
                     properties: {
-                        radius: PhysUtil.MOON_RADIUS,
-                        image: MoonImage
+                        radius: PhysUtil.EARTH_RADIUS,
+                        image: EarthImage,
+                        // static: true
                     }
                 }),
+
+                // new ObjectData({
+                //     id: generateId(),
+                //     name: "Moon",
+                //     type: objectTypes.PLANET,
+                //     position: new Point({x: PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
+                //     physicsData: new PhysicsData({
+                //         mass: PhysUtil.MOON_MASS,
+                //         velocityVector: new Vector({
+                //             value: PhysUtil.MOON_AROUND_EARTH_PERIGEE_VELOCITY,
+                //             angle: 90
+                //         })
+                //     }),
+                //     properties: {
+                //         radius: PhysUtil.MOON_RADIUS,
+                //         image: MoonImage
+                //     }
+                // }),
             ],
             infoText: getInfoTextObject(),
             input: {},

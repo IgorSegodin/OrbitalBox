@@ -64,7 +64,7 @@ class Game {
                 this.canvas.renderAll();
 
                 t0 = t1;
-            }, 10);
+            }, 200);
         });
     }
 

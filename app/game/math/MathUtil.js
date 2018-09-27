@@ -64,11 +64,15 @@ function sumVectors({firstVector, secondVector}) {
 
     let angle = fixAngle(secondVector.getAngle() - firstVector.getAngle());
 
+
+
     const sumVal = Math.sqrt(
         Math.pow(firstVector.getValue(), 2) +
         Math.pow(secondVector.getValue(), 2) +
         (2 * firstVector.getValue() * secondVector.getValue() * Math.cos(angleToRadians(angle)))
     );
+
+    console.log(`angle ${angle} summ ${sumVal}`);
 
     let resultAngle;
 
@@ -80,8 +84,14 @@ function sumVectors({firstVector, secondVector}) {
         ));
     }
 
-    resultAngle += angle <= 180 ? firstVector.getAngle() : secondVector.getAngle();
+    console.log(`angle ${angle} summ ${sumVal} resultAngle ${resultAngle}`);
 
+    // TODO fix this shit
+    if (angle <= 180) {
+        resultAngle += firstVector.getAngle();
+    } else {
+        resultAngle = secondVector.getAngle() + resultAngle;
+    }
     return new Vector({value: sumVal, angle: fixAngle(resultAngle)});
 }
 
