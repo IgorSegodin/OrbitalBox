@@ -39,11 +39,11 @@ function generateWorld(width, height) {
                     id: generateId(),
                     name: "Moon",
                     type: objectTypes.PLANET,
-                    position: new Point({x: PhysUtil.EARTH_TO_MOON_DISTANCE, y: 0}),
+                    position: new Point({x: PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
                     physicsData: new PhysicsData({
                         mass: PhysUtil.MOON_MASS,
                         velocityVector: new Vector({
-                            value: PhysUtil.MOON_VELOCITY_AROUND_EARTH,
+                            value: PhysUtil.MOON_AROUND_EARTH_PERIGEE_VELOCITY,
                             angle: 90
                         })
                     }),

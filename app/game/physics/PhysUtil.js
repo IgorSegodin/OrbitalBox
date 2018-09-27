@@ -3,11 +3,24 @@ const GRAVITATIONAL_CONSTANT = 6.67408 * Math.pow(10, -11); // (m^3 / (kg * sec^
 const EARTH_MASS = 5.972 * Math.pow(10, 24); // (kg)
 const EARTH_RADIUS = 6.371 * Math.pow(10, 6); // (m)
 
-const EARTH_TO_MOON_DISTANCE = 384.4 * Math.pow(10, 6); // (m)
-
 const MOON_MASS = 7.34767309 * Math.pow(10, 22); // (kg)
 const MOON_RADIUS = 1.737 * Math.pow(10, 6); // (m)
-const MOON_VELOCITY_AROUND_EARTH = 1022; // (m/sec)
+
+const MOON_AROUND_EARTH_PERIGEE = 366.392 * Math.pow(10, 6); // (m)
+const MOON_AROUND_EARTH_PERIGEE_VELOCITY = 1068.3; // (m/sec)
+const MOON_AROUND_EARTH_APOGEE = 404.227 * Math.pow(10, 6); // (m)
+const MOON_AROUND_EARTH_APOGEE_VELOCITY = 968.3; // (m/sec)
+
+/*
+
+Perigee velocity
+Vp = Math.sqrt( (2 * G * M * Ra) / (Rp * (Ra + Rp) ))
+
+Apogee velocity
+Va = Math.sqrt( (2 * G * M * Rp) / (Ra * (Ra + Rp) ))
+
+ */
+
 
 /**
  * F = G * m1 * m2 / r^2
@@ -31,14 +44,18 @@ function calcGravityAcceleration({force, m2}) {
 }
 
 export default {
-    calcGravityForce,
-    calcGravityAcceleration,
+    GRAVITATIONAL_CONSTANT,
     EARTH_MASS,
     EARTH_RADIUS,
-    EARTH_TO_MOON_DISTANCE,
     MOON_MASS,
     MOON_RADIUS,
-    MOON_VELOCITY_AROUND_EARTH
+    MOON_AROUND_EARTH_PERIGEE,
+    MOON_AROUND_EARTH_PERIGEE_VELOCITY,
+    MOON_AROUND_EARTH_APOGEE,
+    MOON_AROUND_EARTH_APOGEE_VELOCITY,
+
+    calcGravityForce,
+    calcGravityAcceleration
 }
 
 export {

@@ -3,8 +3,24 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
+const buildProps = getBuildProps();
+
 const input = path.resolve(__dirname, "app");
-const output = path.resolve(__dirname, 'docs');
+const output = path.resolve(__dirname, buildProps.targetDirName || 'dist');
+
+
+function getBuildProps() {
+    const rawArgs = process.argv.slice(2);
+    const props = {};
+
+    rawArgs.forEach(a => {
+        const arr = /--((?:\w|\d)+)=(.+)/g.exec(a);
+        if (arr) {
+            props[arr[1]] = arr[2];
+        }
+    });
+    return props;
+}
 
 module.exports = {
     entry: {
