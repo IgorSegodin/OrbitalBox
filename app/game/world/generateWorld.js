@@ -12,6 +12,7 @@ import {generateId} from 'game/world/generateId';
 
 import EarthImage from 'game/resources/images/planets/04earth.png';
 import MoonImage from 'game/resources/images/planets/05moon.png';
+import NeptuneImage from 'game/resources/images/planets/010neptune.png';
 
 function generateWorld(width, height) {
     return new Promise(function (resolve, reject) {
@@ -34,13 +35,12 @@ function generateWorld(width, height) {
                     properties: {
                         radius: PhysUtil.EARTH_RADIUS,
                         image: EarthImage,
-                        // static: true
                     }
                 }),
 
                 new ObjectData({
                     id: generateId(),
-                    name: "Earth2",
+                    name: "Neptune",
                     type: objectTypes.PLANET,
                     position: new Point({x: -PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
                     physicsData: new PhysicsData({
@@ -52,28 +52,27 @@ function generateWorld(width, height) {
                     }),
                     properties: {
                         radius: PhysUtil.EARTH_RADIUS,
-                        image: EarthImage,
-                        // static: true
+                        image: NeptuneImage,
                     }
                 }),
 
-                // new ObjectData({
-                //     id: generateId(),
-                //     name: "Moon",
-                //     type: objectTypes.PLANET,
-                //     position: new Point({x: PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
-                //     physicsData: new PhysicsData({
-                //         mass: PhysUtil.MOON_MASS,
-                //         velocityVector: new Vector({
-                //             value: PhysUtil.MOON_AROUND_EARTH_PERIGEE_VELOCITY,
-                //             angle: 90
-                //         })
-                //     }),
-                //     properties: {
-                //         radius: PhysUtil.MOON_RADIUS,
-                //         image: MoonImage
-                //     }
-                // }),
+                new ObjectData({
+                    id: generateId(),
+                    name: "Moon",
+                    type: objectTypes.PLANET,
+                    position: new Point({x: PhysUtil.MOON_AROUND_EARTH_PERIGEE, y: 0}),
+                    physicsData: new PhysicsData({
+                        mass: PhysUtil.MOON_MASS,
+                        velocityVector: new Vector({
+                            value: PhysUtil.MOON_AROUND_EARTH_PERIGEE_VELOCITY,
+                            angle: 90
+                        })
+                    }),
+                    properties: {
+                        radius: PhysUtil.MOON_RADIUS,
+                        image: MoonImage
+                    }
+                }),
             ],
             infoText: getInfoTextObject(),
             input: {},

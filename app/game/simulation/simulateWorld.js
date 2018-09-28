@@ -82,8 +82,6 @@ function simulateWorld(world, dT) {
         });
         const newObjPoint = MathUtil.polarToCartesian({center: objPoint, vector: finalDirectionVector});
 
-        console.log(`${obj.getName()} ${newObjPoint} ${velocityVector}`);
-
         simData[obj.getId()] = {
             velocityVector,
             position: newObjPoint,

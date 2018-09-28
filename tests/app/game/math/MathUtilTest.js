@@ -1,20 +1,10 @@
 import {assert, expect} from 'chai';
 
+import {assertPointEquals, assertVectorEquals} from 'assertUtils';
+
 import MathUtil from 'game/math/MathUtil';
 import Point from 'game/math/Point';
 import Vector from 'game/math/Vector';
-
-function assertVectorEquals(expected, real) {
-    const equal = Math.round(expected.getValue()) === Math.round(real.getValue()) &&
-        Math.round(expected.getAngle()) === Math.round(real.getAngle());
-    assert.isOk(equal, `Got ${real}, expected ${expected}`);
-}
-
-function assertPointEquals(expected, real) {
-    const equal = Math.round(expected.getX()) === Math.round(real.getX()) &&
-        Math.round(expected.getY()) === Math.round(real.getY());
-    assert.isOk(equal, `Got ${real}, expected ${expected}`);
-}
 
 describe('MathUtil tests', function () {
     const c = new Point({x: 0, y: 0});
@@ -90,11 +80,11 @@ describe('MathUtil tests', function () {
     const v180 = new Vector({value: 10, angle: 180});
     const v270 = new Vector({value: 10, angle: 270});
 
-    it('sumVectors test 18-23', function () {
+    it('sumVectors test 42-20', function () {
         /* /_ */
-        assertVectorEquals(new Vector({value: 18, angle: 23}), MathUtil.sumVectors({
-            firstVector: new Vector({value: 10, angle: 0}),
-            secondVector: v45
+        assertVectorEquals(new Vector({value: 42, angle: 20}), MathUtil.sumVectors({
+            firstVector: new Vector({value: 20, angle: 0}),
+            secondVector: new Vector({value: 25, angle: 45})
         }));
     });
 
@@ -161,12 +151,12 @@ describe('MathUtil tests', function () {
             secondVector: v180
         }));
     });
-    it('sumVectors test 0-180', function () {
+    it('sumVectors test 0-90', function () {
         /*
          |
          |
          */
-        assertVectorEquals(new Vector({value: 0, angle: 180}), MathUtil.sumVectors({
+        assertVectorEquals(new Vector({value: 0, angle: 90}), MathUtil.sumVectors({
             firstVector: v90,
             secondVector: v270
         }));
@@ -190,31 +180,37 @@ describe('MathUtil tests', function () {
     });
 
     it('sumVectors test 02', function () {
-        // TODO fix util
-        assertVectorEquals(new Vector({value: 0, angle: 0}), MathUtil.sumVectors({
-            firstVector: new Vector({value: 500, angle: 270}),
-            secondVector: new Vector({value: 0.0004, angle: 180})
+        assertVectorEquals(new Vector({value: 32, angle: 252}), MathUtil.sumVectors({
+            firstVector: new Vector({value: 30, angle: 270}),
+            secondVector: new Vector({value: 10, angle: 180})
+        }));
+    });
+
+    it('sumVectors test 03', function () {
+        assertVectorEquals(new Vector({value: 636, angle: 215}), MathUtil.sumVectors({
+            firstVector: new Vector({value: 636.2131416366695, angle: 214.6721779174062}),
+            secondVector: new Vector({value: 0.01280536401042475, angle: 34.65277064524722})
         }));
     });
 
     it('polarToCartesian test 01', function () {
-        assertPointEquals(new Point({x: 10, y: 0}), MathUtil.polarToCartesian({center: c, vector: v0}));
+        assertPointEquals(new Point({x: 10, y: 0}), MathUtil.polarToCartesian({center: c, vector: new Vector({value: 10, angle: 0})}));
     });
 
     it('polarToCartesian test 02', function () {
-        assertPointEquals(new Point({x: 7, y: 7}), MathUtil.polarToCartesian({center: c, vector: v45}));
+        assertPointEquals(new Point({x: 7, y: 7}), MathUtil.polarToCartesian({center: c, vector: new Vector({value: 10, angle: 45})}));
     });
 
     it('polarToCartesian test 03', function () {
-        assertPointEquals(new Point({x: 0, y: 10}), MathUtil.polarToCartesian({center: c, vector: v90}));
+        assertPointEquals(new Point({x: 0, y: 10}), MathUtil.polarToCartesian({center: c, vector: new Vector({value: 10, angle: 90})}));
     });
 
     it('polarToCartesian test 04', function () {
-        assertPointEquals(new Point({x: -10, y: 0}), MathUtil.polarToCartesian({center: c, vector: v180}));
+        assertPointEquals(new Point({x: -10, y: 0}), MathUtil.polarToCartesian({center: c, vector: new Vector({value: 10, angle: 180})}));
     });
 
     it('polarToCartesian test 05', function () {
-        assertPointEquals(new Point({x: 0, y: -10}), MathUtil.polarToCartesian({center: c, vector: v270}));
+        assertPointEquals(new Point({x: 0, y: -10}), MathUtil.polarToCartesian({center: c, vector: new Vector({value: 10, angle: 270})}));
     });
 
 });

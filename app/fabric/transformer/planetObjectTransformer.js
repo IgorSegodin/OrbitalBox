@@ -6,15 +6,18 @@ import {promiseRawImage, meterToPixel} from 'util/FabricUtil';
 
 import EarthImage from 'game/resources/images/planets/04earth.png';
 import MoonImage from 'game/resources/images/planets/05moon.png';
+import NeptuneImage from 'game/resources/images/planets/010neptune.png';
 
 function promiseImages() {
     return Promise.all([
         promiseRawImage(EarthImage),
         promiseRawImage(MoonImage),
+        promiseRawImage(NeptuneImage),
     ]).then(function (images) {
         return {
             [EarthImage]: images[0],
             [MoonImage]: images[1],
+            [NeptuneImage]: images[2],
         };
     })
 }

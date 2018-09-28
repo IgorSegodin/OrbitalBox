@@ -17,6 +17,35 @@ function fixAngle(angle) {
     return result % 360;
 }
 
+
+/**
+ * Decimal adjustment of a number.
+ * https://github.com/jhohlfeld/round10/blob/master/round10.js
+ *
+ * @param {String}  type  The type of adjustment.
+ * @param {Number}  value The number.
+ * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+ * @returns {Number} The adjusted value.
+ */
+function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+        return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+        return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+}
+
 /**
  * @param center {Point}
  * @param point {Point}
@@ -59,12 +88,7 @@ function calcDistance({center, point}) {
  * @return {Vector}
  */
 function sumVectors({firstVector, secondVector}) {
-    secondVector = new Vector({value: secondVector.getValue(), angle: 360 + secondVector.getAngle()});
-
-
-    let angle = fixAngle(secondVector.getAngle() - firstVector.getAngle());
-
-
+    let angle = firstVector.getAngle() - secondVector.getAngle();
 
     const sumVal = Math.sqrt(
         Math.pow(firstVector.getValue(), 2) +
@@ -72,27 +96,33 @@ function sumVectors({firstVector, secondVector}) {
         (2 * firstVector.getValue() * secondVector.getValue() * Math.cos(angleToRadians(angle)))
     );
 
-    console.log(`angle ${angle} summ ${sumVal}`);
+    const dA = sumVal !== 0 ?
+        radiansToAngle(
+            Math.acos(
+                decimalAdjust(
+                    'round',
+                    ((Math.pow(sumVal, 2) + Math.pow(firstVector.getValue(), 2) - Math.pow(secondVector.getValue(), 2)) / (2 * sumVal * firstVector.getValue())),
+                    -10
+                )
+            )
+        )
+        : 0;
 
-    let resultAngle;
+    const data = firstVector.getValue() >= secondVector.getValue() ?
+        {mainAngle: firstVector.getAngle(), subAngle: secondVector.getAngle()} :
+        {mainAngle: secondVector.getAngle(), subAngle: firstVector.getAngle()};
 
-    if (sumVal === 0) {
-        resultAngle = firstVector.getAngle();
-    } else {
-        resultAngle = radiansToAngle(Math.acos(
-            (Math.pow(sumVal, 2) + Math.pow(firstVector.getValue(), 2) - Math.pow(secondVector.getValue(), 2)) / (2 * sumVal * firstVector.getValue())
-        ));
+    const sign = Math.abs(angle) >= 180 ? -1 : 1;
+
+    let finalAngle = data.mainAngle > data.subAngle ? data.mainAngle - dA * sign : data.mainAngle + dA * sign;
+
+    const result = new Vector({value: sumVal, angle: fixAngle(finalAngle)});
+
+    if (isNaN(result.getValue()) || isNaN(result.getAngle())) {
+        throw new Error(`NaN sumVectors: firstVector ${firstVector} secondVector ${secondVector} result ${result}`);
     }
 
-    console.log(`angle ${angle} summ ${sumVal} resultAngle ${resultAngle}`);
-
-    // TODO fix this shit
-    if (angle <= 180) {
-        resultAngle += firstVector.getAngle();
-    } else {
-        resultAngle = secondVector.getAngle() + resultAngle;
-    }
-    return new Vector({value: sumVal, angle: fixAngle(resultAngle)});
+    return result;
 }
 
 /**
