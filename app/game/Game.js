@@ -16,10 +16,17 @@ import Timer from 'game/world/Timer';
 /**
  * @return {Array<Object>}
  */
-function getInfoObjects({world, dT}) {
+function getInfoObjects({world, dT, targetObjectId}) {
     const lines = [];
 
     lines.push(`FPS: ${1000 / dT}`);
+
+    if (targetObjectId) {
+        world.objects.filter((o) => o.getId() === targetObjectId).forEach((o) => {
+            lines.push(`Name: ${o.getName()}`);
+            lines.push(`V: ${o.getPhysicsData().getVelocity().getValue().toFixed(2)} m/s`);
+        });
+    }
 
     const infoText = new fabric.Text(lines.join("\r\n"), {
         fontWeight: 'bold',
@@ -33,13 +40,15 @@ function getInfoObjects({world, dT}) {
     return [infoText];
 }
 
-function processTick({canvas, objectTransformer, world, inputActionMap, camera, dT, timeMultiplier}) {
+function processTick({canvas, objectTransformer, world, inputActionMap, camera, dT, timeMultiplier, targetObjectId}) {
     simulateWorld(world, dT * timeMultiplier);
 
     simulateInput({
         inputActionMap,
         camera,
-        dT
+        dT,
+        world,
+        targetObjectId
     });
 
     // TODO filter, render only visible objects
@@ -54,7 +63,7 @@ function processTick({canvas, objectTransformer, world, inputActionMap, camera, 
         );
     });
 
-    getInfoObjects({world, dT}).forEach((o) => {
+    getInfoObjects({world, dT, targetObjectId}).forEach((o) => {
         canvas.add(o);
     });
 }
@@ -64,6 +73,8 @@ class Game {
     constructor({canvasEl}) {
         this.timeMultiplier = 1;
         this.cameraZoom = 1;
+        this.targetObjectId = null;
+
         this.canvas = new fabric.StaticCanvas(canvasEl);
         this.canvas.selection = false;
 
@@ -71,21 +82,23 @@ class Game {
             backgroundColor: "black"
         };
 
-        this.canvas.setHeight(window.innerHeight - 6);
-        this.canvas.setWidth(canvasEl.parentNode.clientWidth - 6);
+        this.canvas.setHeight(canvasEl.parentNode.clientHeight - 4);
+        this.canvas.setWidth(canvasEl.parentNode.clientWidth - 4);
     }
 
-    init() {
-        this.start();
+    init({updateTargetObjectOptions}) {
+        this.start({updateTargetObjectOptions});
     }
 
-    start() {
+    start({updateTargetObjectOptions}) {
         Promise.all([
             objectTransformer.promise(),
             generateWorld()
         ]).then((values) => {
             const objectTransformer = values[0];
             const world = values[1];
+
+            updateTargetObjectOptions(world.objects);
 
             this.clear();
 
@@ -121,7 +134,8 @@ class Game {
                     camera,
                     inputActionMap,
                     dT,
-                    timeMultiplier: this.timeMultiplier
+                    timeMultiplier: this.timeMultiplier,
+                    targetObjectId: this.targetObjectId
                 });
 
                 this.canvas.renderAll();
@@ -146,6 +160,10 @@ class Game {
 
     setZoom(value) {
         this.cameraZoom = value;
+    }
+
+    setTargetObject(id) {
+        this.targetObjectId = id;
     }
 
 }

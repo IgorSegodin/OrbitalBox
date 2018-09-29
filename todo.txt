@@ -1,6 +1,4 @@
-TODO UI for object selection and camera
-TODO add camera zoom
-TODO World object
-TODO Draw orbit ellipse
-TODO camera controls (follow object, free view)
+TODO real solar system, with sun in the center
 TODO draw only visible objects ?
+TODO Draw orbit ellipse
+TODO Collision model

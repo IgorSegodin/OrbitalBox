@@ -1,5 +1,5 @@
 
-let count = 0;
+let count = 1;
 
 function generateId() {
     return count++;

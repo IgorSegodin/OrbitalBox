@@ -35,20 +35,26 @@ class ObjectTransformer {
             objectData.getProperties()._fabricObject_ = fabricObject;
         }
 
+        fabricObject.set({
+            scaleX: camera.getZoom(),
+            scaleY: camera.getZoom()
+        });
+
         const objPos = objectData.getPosition();
         const cameraPos = camera.getPosition();
 
-        const screenCenterX = camera.getWidth() / 2;
-        const screenCenterY = camera.getHeight() / 2;
+        const screenCenterX = (camera.getWidth() / 2);
+        const screenCenterY = (camera.getHeight() / 2);
 
-        const relativeX = meterToPixel(objPos.getX() - cameraPos.getX()) - fabricObject.getWidth() / 2;
-        const relativeY = meterToPixel(objPos.getY() - cameraPos.getY()) - fabricObject.getHeight() / 2;
+        const relativeX = meterToPixel(objPos.getX() - cameraPos.getX()) * camera.getZoom();
+        const relativeY = meterToPixel(objPos.getY() - cameraPos.getY()) * camera.getZoom();
+
+        const left = screenCenterX + relativeX - fabricObject.getWidth() / 2;
+        const top = -screenCenterY + camera.getHeight() - relativeY - fabricObject.getHeight() / 2;
 
         fabricObject.set({
-            scaleX: camera.getZoom(),
-            scaleY: camera.getZoom(),
-            left: screenCenterX + relativeX * camera.getZoom(),
-            top: -screenCenterY + camera.getHeight() - relativeY * camera.getZoom()
+            left: left,
+            top: top
         });
 
         return fabricObject;

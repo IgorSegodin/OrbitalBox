@@ -11,11 +11,13 @@ function calcDelta({camera, dT}) {
 }
 
 /**
+ * @param world
  * @param inputActionMap {InputActionMap}
  * @param camera {Camera}
+ * @param targetObjectId {Number}
  * @param dT {Number} time between ticks
  */
-function simulateInput({inputActionMap, camera, dT}) {
+function simulateInput({world, inputActionMap, camera, targetObjectId, dT}) {
     const pos = camera.getPosition();
 
     let x = pos.getX();
@@ -33,6 +35,13 @@ function simulateInput({inputActionMap, camera, dT}) {
     }
     if (inputActionMap.isCameraMoveRight()) {
         x += calcDelta({camera, dT});
+    }
+
+    if (targetObjectId) {
+        world.objects.filter((o) => o.getId() === targetObjectId).forEach((o) => {
+            x = o.getPosition().getX();
+            y = o.getPosition().getY();
+        });
     }
 
     if (pos.getX() !== x || pos.getY() !== y) {
