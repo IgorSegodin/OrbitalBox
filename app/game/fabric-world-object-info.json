@@ -13,9 +13,10 @@
       "updateValue": "function({timePassed, linearProgress, animationData, targetObject}) actual value changer",
       "duration": "specified animation duration",
       "infinite": "flag, if animation should be looped",
-      "next": "? Link to next animation, which should be started after this one",
-      "onFinish": "? Function, callback for finish"
+      "next": "Link to next animation, which should be started after this one",
+      "onFinish": "function({translationData, targetObject}) Function, callback for finish"
     }
   ],
-  "properties": "Object with individual properties"
+  "properties": "Object with individual properties",
+  "_objectData_": "Link to ObjectData"
 }

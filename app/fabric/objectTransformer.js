@@ -1,8 +1,7 @@
-import {meterToPixel} from 'util/FabricUtil';
-import Point from 'game/math/Point';
+import planetObjectTransformer from 'fabric/transformer/planetObjectTransformer';
 import ObjectData from 'game/data/ObjectData';
 import Camera from 'game/world/Camera';
-import planetObjectTransformer from 'fabric/transformer/planetObjectTransformer';
+import {meterToPixel} from 'util/FabricUtil';
 
 const transformerLoaders = [
     planetObjectTransformer
@@ -33,6 +32,7 @@ class ObjectTransformer {
             const transformer = this.transformerMap[objectData.getType()];
             fabricObject = transformer.transform({objectData});
             objectData.getProperties()._fabricObject_ = fabricObject;
+            fabricObject.set({_objectData_: objectData});
         }
 
         fabricObject.set({
@@ -49,8 +49,8 @@ class ObjectTransformer {
         const relativeX = meterToPixel(objPos.getX() - cameraPos.getX()) * camera.getZoom();
         const relativeY = meterToPixel(objPos.getY() - cameraPos.getY()) * camera.getZoom();
 
-        const left = screenCenterX + relativeX - fabricObject.getWidth() / 2;
-        const top = -screenCenterY + camera.getHeight() - relativeY - fabricObject.getHeight() / 2;
+        const left = screenCenterX + relativeX;
+        const top = -screenCenterY + camera.getHeight() - relativeY;
 
         fabricObject.set({
             left: left,

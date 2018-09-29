@@ -1,7 +1,12 @@
-function simulateTranslation(objects, world) {
+import Timer from 'game/world/Timer';
 
-    // TODO use world timer
-    const now = new Date().getTime();
+/**
+ * @param objects {Array<Object>}
+ * @param timer {Timer}
+ */
+function simulateTranslation(objects, timer) {
+
+    const now = timer.getTime();
 
     for (let obj of objects) {
         let translations = obj.get("translations");
@@ -36,6 +41,8 @@ function simulateTranslation(objects, world) {
             }
         }
 
+        const nextList = [];
+
         for (let translationData of finishedTranslationData) {
             const idx = translations.indexOf(translationData);
             translations = translations.splice(idx + 1, 1);
@@ -43,10 +50,14 @@ function simulateTranslation(objects, world) {
             if (translationData.onFinish) {
                 translationData.onFinish({translationData, targetObject: obj});
             }
+
+            if (translationData.next) {
+                nextList.push(translationData.next);
+            }
         }
 
         obj.set({
-            translations
+            translations: translations.concat(nextList)
         });
     }
 

@@ -2,11 +2,11 @@ import {fabric} from 'fabric';
 
 import ObjectData from 'game/data/ObjectData';
 import objectTypes from 'game/data/objectTypes';
-import {promiseRawImage, meterToPixel} from 'util/FabricUtil';
-
+import NeptuneImage from 'game/resources/images/planets/010neptune.png';
 import EarthImage from 'game/resources/images/planets/04earth.png';
 import MoonImage from 'game/resources/images/planets/05moon.png';
-import NeptuneImage from 'game/resources/images/planets/010neptune.png';
+import {propertyTranslation} from 'game/translation/TranslationFactory';
+import {meterToPixel, promiseRawImage} from 'util/FabricUtil';
 
 function promiseImages() {
     return Promise.all([
@@ -20,6 +20,24 @@ function promiseImages() {
             [NeptuneImage]: images[2],
         };
     })
+}
+
+function createLoopRotation() {
+    return Object.assign(
+        propertyTranslation({
+            property: 'angle',
+            duration: 100000,
+            finalValue: 360
+        }),
+        {
+            onFinish: function ({translationData, targetObject}) {
+                targetObject.set({
+                    angle: 0
+                });
+                translationData.next = createLoopRotation();
+            }
+        }
+    );
 }
 
 /**
@@ -38,9 +56,16 @@ function transformInternal({objectData, images}) {
         width: radiusInPixel * 2,
         height: radiusInPixel * 2,
 
+        originX: 'center',
+        originY: 'center',
+
         selectable: false,
         hasControls: false,
-        hasBorders: false
+        hasBorders: false,
+
+        translations: [
+            createLoopRotation()
+        ]
     });
 
     return object;

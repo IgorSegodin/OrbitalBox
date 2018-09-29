@@ -7,6 +7,7 @@ import InputState from 'game/input/InputState';
 import Point from 'game/math/Point';
 
 import simulateInput from 'game/simulation/simulateInput';
+import simulateTranslation from 'game/simulation/simulateTranslation';
 import simulateWorld from 'game/simulation/simulateWorld';
 import Camera from 'game/world/Camera';
 import generateWorld from 'game/world/generateWorld';
@@ -137,6 +138,8 @@ class Game {
                     timeMultiplier: this.timeMultiplier,
                     targetObjectId: this.targetObjectId
                 });
+
+                simulateTranslation(this.canvas.getObjects(), timer);
 
                 this.canvas.renderAll();
 
