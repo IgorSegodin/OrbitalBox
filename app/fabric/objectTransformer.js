@@ -1,6 +1,7 @@
 import {meterToPixel} from 'util/FabricUtil';
 import Point from 'game/math/Point';
 import ObjectData from 'game/data/ObjectData';
+import Camera from 'game/world/Camera';
 import planetObjectTransformer from 'fabric/transformer/planetObjectTransformer';
 
 const transformerLoaders = [
@@ -24,8 +25,9 @@ class ObjectTransformer {
     /**
      * @param objectData {ObjectData}
      * @param world {Object}
+     * @param camera {Camera}
      */
-    transform({objectData, world}) {
+    transform({objectData, world, camera}) {
         let fabricObject = objectData.getProperties()._fabricObject_;
         if (!fabricObject) {
             const transformer = this.transformerMap[objectData.getType()];
@@ -37,12 +39,12 @@ class ObjectTransformer {
 
         // center of canvas == world [0,0] point
 
-        const xCenter = world.width / 2;
-        const yCenter = world.height / 2;
+        const xCenter = camera.getWidth() / 2;
+        const yCenter = camera.getHeight() / 2;
 
         fabricObject.set({
-            left: xCenter + meterToPixel(objectData.getPosition().getX()) - fabricObject.getWidth() / 2,
-            top: -yCenter + world.height - meterToPixel(objectData.getPosition().getY()) - fabricObject.getHeight() / 2
+            left: xCenter + meterToPixel(objectData.getPosition().getX() - camera.getPosition().getX()) - fabricObject.getWidth() / 2,
+            top: -yCenter + camera.getHeight() - meterToPixel(objectData.getPosition().getY() - camera.getPosition().getY()) - fabricObject.getHeight() / 2
         });
 
         return fabricObject;

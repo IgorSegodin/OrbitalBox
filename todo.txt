@@ -1,6 +1,6 @@
+TODO UI for object selection and camera
+TODO add camera zoom
 TODO World object
 TODO Draw orbit ellipse
-TODO add camera projection and zoom
 TODO camera controls (follow object, free view)
-TODO implement multiple object physics calculation
 TODO draw only visible objects ?

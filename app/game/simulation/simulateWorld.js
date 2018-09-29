@@ -1,9 +1,6 @@
-import {MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT} from 'game/input/inputListener';
-
 import MathUtil from 'game/math/MathUtil';
-import PhysUtil from 'game/physics/PhysUtil';
-import Point from 'game/math/Point';
 import Vector from 'game/math/Vector';
+import PhysUtil from 'game/physics/PhysUtil';
 
 function simulateWorld(world, dT) {
     dT = dT / 1000; // seconds
@@ -55,25 +52,6 @@ function simulateWorld(world, dT) {
                 firstVector: velocityVector,
                 secondVector: gravityVector,
             });
-
-            if (obj.getName() === "Moon") {
-                world.infoText.set({text: `R: ${Math.round(distance)} m \r\nV: ${Math.round(velocityVector.getValue())} m/s`});
-            }
-        }
-        if (obj.getName() === "Moon") {
-            if (world.input[MOVE_UP]) {
-                velocityVector = new Vector({
-                    value: velocityVector.getValue() + 1,
-                    angle: velocityVector.getAngle()
-                });
-            }
-
-            if (world.input[MOVE_DOWN]) {
-                velocityVector = new Vector({
-                    value: velocityVector.getValue() - 1,
-                    angle: velocityVector.getAngle()
-                });
-            }
         }
 
         const finalDirectionVector = new Vector({
