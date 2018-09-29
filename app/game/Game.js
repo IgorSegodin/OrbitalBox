@@ -63,6 +63,7 @@ class Game {
 
     constructor({canvasEl}) {
         this.timeMultiplier = 1;
+        this.cameraZoom = 1;
         this.canvas = new fabric.StaticCanvas(canvasEl);
         this.canvas.selection = false;
 
@@ -70,8 +71,8 @@ class Game {
             backgroundColor: "black"
         };
 
-        this.canvas.setHeight(window.innerHeight - 2);
-        this.canvas.setWidth(canvasEl.parentNode.parentNode.clientWidth - 2);
+        this.canvas.setHeight(window.innerHeight - 6);
+        this.canvas.setWidth(canvasEl.parentNode.clientWidth - 6);
     }
 
     init() {
@@ -98,7 +99,8 @@ class Game {
             const camera = new Camera({
                 width: this.canvas.getWidth(),
                 height: this.canvas.getHeight(),
-                position: new Point({x: 0, y: 0})
+                position: new Point({x: 0, y: 0}),
+                zoom: this.cameraZoom
             });
 
             let t0 = timer.getTime();
@@ -109,6 +111,8 @@ class Game {
 
                 this.canvas.clear();
                 this.canvas.set(this.canvasRenderProps);
+
+                camera.setZoom(this.cameraZoom);
 
                 processTick({
                     canvas: this.canvas,
@@ -138,6 +142,10 @@ class Game {
 
     setTimeMultiplier(value) {
         this.timeMultiplier = value;
+    }
+
+    setZoom(value) {
+        this.cameraZoom = value;
     }
 
 }

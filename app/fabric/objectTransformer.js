@@ -35,16 +35,20 @@ class ObjectTransformer {
             objectData.getProperties()._fabricObject_ = fabricObject;
         }
 
-        // TODO add camera projection calculation
+        const objPos = objectData.getPosition();
+        const cameraPos = camera.getPosition();
 
-        // center of canvas == world [0,0] point
+        const screenCenterX = camera.getWidth() / 2;
+        const screenCenterY = camera.getHeight() / 2;
 
-        const xCenter = camera.getWidth() / 2;
-        const yCenter = camera.getHeight() / 2;
+        const relativeX = meterToPixel(objPos.getX() - cameraPos.getX()) - fabricObject.getWidth() / 2;
+        const relativeY = meterToPixel(objPos.getY() - cameraPos.getY()) - fabricObject.getHeight() / 2;
 
         fabricObject.set({
-            left: xCenter + meterToPixel(objectData.getPosition().getX() - camera.getPosition().getX()) - fabricObject.getWidth() / 2,
-            top: -yCenter + camera.getHeight() - meterToPixel(objectData.getPosition().getY() - camera.getPosition().getY()) - fabricObject.getHeight() / 2
+            scaleX: camera.getZoom(),
+            scaleY: camera.getZoom(),
+            left: screenCenterX + relativeX * camera.getZoom(),
+            top: -screenCenterY + camera.getHeight() - relativeY * camera.getZoom()
         });
 
         return fabricObject;

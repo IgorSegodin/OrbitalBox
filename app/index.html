@@ -31,7 +31,7 @@
             outline: 1px solid darkgreen;
         }
 
-        #timeMultiplier {
+        [data-range-input] {
             width: 100%;
         }
 
@@ -46,14 +46,21 @@
 <div>
     <div class="info-container">
         <div class="info-wrapper">
-            <div>This is real-scaled Moon orbit simulation sandbox.</div>
+            <div>This is real-scaled solar system simulation sandbox.</div>
             <br/>
-            <div>Use UP, DOWN arrows, to increase and decrease speed.</div>
+            <div>Use arrows, to control camera.</div>
             <br/>
 
             <div>
                 <div><b>Time</b> x <span id="timeMultiplierLabel"></span></div>
-                <input id="timeMultiplier" type="range" value="50000" step="1" min="0" max="1000000">
+                <input id="timeMultiplier" data-range-input type="range" value="50000" step="1" min="0" max="1000000">
+            </div>
+
+            <br/>
+
+            <div>
+                <div><b>Zoom</b> x <span id="zoomLabel"></span></div>
+                <input id="zoom" data-range-input type="range" value="100" step="1" min="1" max="10000">
             </div>
 
             <div id="version">v0.0.1</div>
