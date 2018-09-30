@@ -1,4 +1,7 @@
+import ObjectData from "game/data/ObjectData";
+import MathUtil from "game/math/MathUtil";
 import Point from "game/math/Point";
+import Vector from "game/math/Vector";
 import Camera from 'game/world/Camera';
 import InputActionMap from 'game/world/InputActionMap';
 
@@ -14,10 +17,11 @@ function calcDelta({camera, dT}) {
  * @param world
  * @param inputActionMap {InputActionMap}
  * @param camera {Camera}
+ * @param playerShip {ObjectData}
  * @param targetObjectId {Number}
  * @param dT {Number} time between ticks
  */
-function simulateInput({world, inputActionMap, camera, targetObjectId, dT}) {
+function simulateInput({world, inputActionMap, camera, playerShip, targetObjectId, dT}) {
     const pos = camera.getPosition();
 
     let x = pos.getX();
@@ -42,6 +46,9 @@ function simulateInput({world, inputActionMap, camera, targetObjectId, dT}) {
             x = o.getPosition().getX();
             y = o.getPosition().getY();
         });
+    } else {
+        x = playerShip.getPosition().getX();
+        y = playerShip.getPosition().getY();
     }
 
     if (pos.getX() !== x || pos.getY() !== y) {
@@ -50,6 +57,41 @@ function simulateInput({world, inputActionMap, camera, targetObjectId, dT}) {
             y: y
         }));
     }
+
+    let shipRotationAngle = playerShip.getProperties().rotationAngle;
+
+    if (inputActionMap.isShipRotateLeft()) {
+        shipRotationAngle = shipRotationAngle + 0.1 * dT;
+    }
+    if (inputActionMap.isShipRotateRight()) {
+        shipRotationAngle = shipRotationAngle - 0.1 * dT;
+    }
+
+    playerShip.getProperties().rotationAngle = shipRotationAngle;
+
+    let shipVelocityVector = playerShip.getPhysicsData().getVelocity();
+
+    if (inputActionMap.isShipAccelerate()) {
+        shipVelocityVector = MathUtil.sumVectors({
+            firstVector: shipVelocityVector,
+            secondVector: new Vector({
+                value: 0.3 * dT,
+                angle: shipRotationAngle
+            }),
+        });
+    }
+    if (inputActionMap.isShipDecelerate()) {
+        shipVelocityVector = MathUtil.sumVectors({
+            firstVector: shipVelocityVector,
+            secondVector: new Vector({
+                value: 0.3 * dT,
+                angle: shipRotationAngle + 180
+            }),
+        });
+    }
+
+    playerShip.getPhysicsData().setVelocity(shipVelocityVector);
+
 }
 
 export default simulateInput;

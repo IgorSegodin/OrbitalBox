@@ -36,10 +36,8 @@ function createSelect({containerId, options, onChange}) {
     emptyOptionEl.innerText = 'No target';
     selectEl.prepend(emptyOptionEl);
 
-    if (options.length > 0) {
-        selectEl.value = options[0].getId();
-        onChange(selectEl.value);
-    }
+    selectEl.value = "0";
+    onChange(selectEl.value);
 
     selectEl.onchange = function () {
         onChange(selectEl.value || null);

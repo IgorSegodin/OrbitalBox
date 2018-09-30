@@ -1,10 +1,12 @@
 import planetObjectTransformer from 'fabric/transformer/planetObjectTransformer';
+import shipObjectTransformer from 'fabric/transformer/shipObjectTransformer';
 import ObjectData from 'game/data/ObjectData';
 import Camera from 'game/world/Camera';
 import {meterToPixel} from 'util/FabricUtil';
 
 const transformerLoaders = [
-    planetObjectTransformer
+    planetObjectTransformer,
+    shipObjectTransformer
 ];
 
 class ObjectTransformer {
@@ -34,17 +36,9 @@ class ObjectTransformer {
             fabricObject.set({_objectData_: objectData});
         }
 
-        let scaleSize = camera.getZoom();
-
-        if (fabricObject.width * camera.getZoom() < 6) {
-            // Min width = 6 px
-            scaleSize = 6 / fabricObject.width;
+        if (fabricObject.updateProps) {
+            fabricObject.updateProps({objectData, fabricObject, zoom: camera.getZoom()});
         }
-
-        fabricObject.set({
-            scaleX: scaleSize,
-            scaleY: scaleSize,
-        });
 
         const objPos = objectData.getPosition();
         const cameraPos = camera.getPosition();

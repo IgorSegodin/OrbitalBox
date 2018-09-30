@@ -104,12 +104,36 @@ function createPlanet({name, mass, radius, image, aroundSunPeriapsis, velocity})
     });
 }
 
+function createPlayerShip() {
+    return new ObjectData({
+        id: generateId(),
+        name: "Ship",
+        type: objectTypes.SHIP,
+        position: new Point({x: EARTH_AROUND_SUN_PERIAPSIS + EARTH_RADIUS + 400000, y: 0}),
+        physicsData: new PhysicsData({
+            mass: 20000,
+            velocityVector: new Vector({
+                value: EARTH_AROUND_SUN_PERIAPSIS_VELOCITY + 7672.4,
+                angle: 90
+            })
+        }),
+        properties: {
+            width: 50,
+            height: 120,
+            rotationAngle: 90
+        }
+    });
+}
+
 /**
  * @return {Promise<Object>}
  */
 function generateWorld() {
     return new Promise(function (resolve, reject) {
         const world = {
+
+            playerShip: createPlayerShip(),
+
             objects: [
                 new ObjectData({
                     id: generateId(),

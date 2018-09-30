@@ -32,6 +32,25 @@ class InputActionMap {
         return this.inputState.isButtonPressed("mouse_1"); // left mouse button
     }
 
+    isShipAccelerate() {
+        return this.inputState.isButtonPressed("87"); // W
+    }
+
+    isShipDecelerate() {
+        return this.inputState.isButtonPressed("83"); // S
+    }
+
+    isShipRotateLeft() {
+        return this.inputState.isButtonPressed("65"); // A
+    }
+
+    isShipRotateRight() {
+        return this.inputState.isButtonPressed("68"); // D
+    }
+
+    // 16 = LSHIFT
+    // 32 = space
+
 }
 
 export default InputActionMap;

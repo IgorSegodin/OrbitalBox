@@ -1,6 +1,4 @@
-TODO real solar system, with sun in the center
-TODO change scale when selecting object
-TODO select other object, to show relative speed
-TODO draw only visible objects ?
+TODO Space ship, starting from Earth
 TODO Draw orbit ellipse
-TODO Collision model
+TODO Collision model (explosions, forbid to get to close to object)
+TODO ship dock on planet

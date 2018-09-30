@@ -1,59 +1,26 @@
-import {fabric} from 'fabric';
+import {fabric} from "fabric";
 
-import objectTransformer from 'fabric/objectTransformer';
-import canvasListener from 'game/input/canvasListener';
-import inputListener from 'game/input/inputListener';
-import InputState from 'game/input/InputState';
-import Point from 'game/math/Point';
+import objectTransformer from "fabric/objectTransformer";
+import canvasListener from "game/input/canvasListener";
+import inputListener from "game/input/inputListener";
+import InputState from "game/input/InputState";
+import Point from "game/math/Point";
+import simulateInput from "game/simulation/simulateInput";
+import simulateTranslation from "game/simulation/simulateTranslation";
+import simulateWorld from "game/simulation/simulateWorld";
+import Camera from "game/world/Camera";
+import generateWorld from "game/world/generateWorld";
+import InputActionMap from "game/world/InputActionMap";
+import Timer from "game/world/Timer";
+import uiInfoBuilder from "game/world/uiInfoBuilder";
 
-import simulateInput from 'game/simulation/simulateInput';
-import simulateTranslation from 'game/simulation/simulateTranslation';
-import simulateWorld from 'game/simulation/simulateWorld';
-import Camera from 'game/world/Camera';
-import generateWorld from 'game/world/generateWorld';
-import InputActionMap from 'game/world/InputActionMap';
-import Timer from 'game/world/Timer';
-
-/**
- * @return {Array<Object>}
- */
-function getInfoObjects({world, dT, targetObjectId}) {
-    const lines = [];
-
-    lines.push(`FPS: ${1000 / dT}`);
-
-    if (targetObjectId) {
-        world.objects.filter((o) => o.getId() === targetObjectId).forEach((o) => {
-            lines.push(`Name: ${o.getName()}`);
-            if (o.getPhysicsData()) {
-                if (o.getPhysicsData().getVelocity()) {
-                    lines.push(`V: ${o.getPhysicsData().getVelocity().getValue().toFixed(2)} m/s`);
-                }
-                if (o.getPhysicsData().getMass()) {
-                    lines.push(`M: ${(o.getPhysicsData().getMass() * Math.pow(10, -20)).toFixed(0)} x 10^20 kg`);
-                }
-            }
-        });
-    }
-
-    const infoText = new fabric.Text(lines.join("\r\n"), {
-        fontWeight: 'bold',
-        fill: `white`,
-        fontFamily: 'Arial',
-        fontSize: 12,
-        left: 0,
-        top: 0
-    });
-
-    return [infoText];
-}
-
-function processTick({canvas, objectTransformer, world, inputActionMap, camera, dT, timeMultiplier, targetObjectId}) {
+function processTick({canvas, objectTransformer, world, inputActionMap, camera, playerShip, dT, timeMultiplier, targetObjectId}) {
     simulateWorld(world, dT * timeMultiplier);
 
     simulateInput({
         inputActionMap,
         camera,
+        playerShip,
         dT,
         world,
         targetObjectId
@@ -71,9 +38,16 @@ function processTick({canvas, objectTransformer, world, inputActionMap, camera, 
         );
     });
 
-    getInfoObjects({world, dT, targetObjectId}).forEach((o) => {
-        canvas.add(o);
+    const infoLines = uiInfoBuilder.getInfoLines({world, dT, timeMultiplier, playerShip, targetObjectId});
+    const infoText = new fabric.Text(infoLines.join("\r\n"), {
+        fontWeight: 'bold',
+        fill: `white`,
+        fontFamily: 'Arial',
+        fontSize: 12,
+        left: 0,
+        top: 0
     });
+    canvas.add(infoText);
 }
 
 class Game {
@@ -124,6 +98,9 @@ class Game {
                 zoom: this.cameraZoom
             });
 
+            const playerShip = world.playerShip;
+            world.objects.push(playerShip);
+
             let t0 = timer.getTime();
 
             this.interval = setInterval(() => {
@@ -140,6 +117,7 @@ class Game {
                     objectTransformer,
                     world,
                     camera,
+                    playerShip,
                     inputActionMap,
                     dT,
                     timeMultiplier: this.timeMultiplier,
@@ -165,7 +143,7 @@ class Game {
     }
 
     setTimeMultiplier(value) {
-        this.timeMultiplier = value;
+        this.timeMultiplier = +value;
     }
 
     setZoom(value) {

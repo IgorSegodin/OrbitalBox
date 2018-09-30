@@ -149,9 +149,19 @@ function meterToPixel(meters) {
     return meters * Math.pow(10, -6);
 }
 
+/**
+ * Converts to Fabric angles: west - 270, north - 0, east - 90, south - 180
+ * @param originAngle {Number} west - 0, north - 90, east - 180, south - 270
+ */
+function convertAngle(originAngle) {
+    const fabricAngle = -originAngle + 90;
+    return fabricAngle % 360;
+}
+
 export {
     pixelToMeter,
     meterToPixel,
+    convertAngle,
     setObjectPoint,
     promiseImage,
     promiseRawImage,

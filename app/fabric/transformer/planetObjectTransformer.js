@@ -71,14 +71,17 @@ function createLoopRotation() {
 function transformInternal({objectData, images}) {
     const props = objectData.getProperties();
 
-    const radiusInPixel = Math.max(meterToPixel(props.radius), 2); // min radius is 2 pixels
+    const radiusInPixel = meterToPixel(props.radius);
 
     const img = images[props.image];
 
-    const object = new fabric.Image(img);
+    const object = new fabric.Circle();
+    // const object = new fabric.Image(img);
     object.set({
-        width: radiusInPixel * 2,
-        height: radiusInPixel * 2,
+        // width: radiusInPixel * 2,
+        // height: radiusInPixel * 2,
+        radius: radiusInPixel,
+        fill: "green",
 
         originX: 'center',
         originY: 'center',
@@ -87,10 +90,24 @@ function transformInternal({objectData, images}) {
         hasControls: false,
         hasBorders: false,
 
+        // stroke: "#ffffff",
+        // strokeWidth: 1,
+
+        // clipTo: function (ctx) {
+        //     ctx.arc(0, 0, radiusInPixel, 0, Math.PI * 2, true);
+        // },
+
         translations: [
             createLoopRotation()
         ]
     });
+
+    object.updateProps = function({objectData, fabricObject, zoom}) {
+        const radius = radiusInPixel * zoom;
+        fabricObject.set({
+            radius: Math.max(radius, 3)
+        });
+    };
 
     return object;
 }
