@@ -23,21 +23,27 @@ class ObjectTransformer {
 
     /**
      * @param objectData {ObjectData}
-     * @param world {Object}
      * @param camera {Camera}
      */
-    transform({objectData, world, camera}) {
+    transform({objectData, camera}) {
         let fabricObject = objectData.getProperties()._fabricObject_;
         if (!fabricObject) {
             const transformer = this.transformerMap[objectData.getType()];
-            fabricObject = transformer.transform({objectData});
+            fabricObject = transformer.transform({objectData, fabricObject});
             objectData.getProperties()._fabricObject_ = fabricObject;
             fabricObject.set({_objectData_: objectData});
         }
 
+        let scaleSize = camera.getZoom();
+
+        if (fabricObject.width * camera.getZoom() < 6) {
+            // Min width = 6 px
+            scaleSize = 6 / fabricObject.width;
+        }
+
         fabricObject.set({
-            scaleX: camera.getZoom(),
-            scaleY: camera.getZoom()
+            scaleX: scaleSize,
+            scaleY: scaleSize,
         });
 
         const objPos = objectData.getPosition();

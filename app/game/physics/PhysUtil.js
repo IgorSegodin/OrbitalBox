@@ -1,27 +1,5 @@
 const GRAVITATIONAL_CONSTANT = 6.67408 * Math.pow(10, -11); // (m^3 / (kg * sec^2))
 
-const EARTH_MASS = 5.972 * Math.pow(10, 24); // (kg)
-const EARTH_RADIUS = 6.371 * Math.pow(10, 6); // (m)
-
-const MOON_MASS = 7.34767309 * Math.pow(10, 22); // (kg)
-const MOON_RADIUS = 1.737 * Math.pow(10, 6); // (m)
-
-const MOON_AROUND_EARTH_PERIGEE = 366.392 * Math.pow(10, 6); // (m)
-const MOON_AROUND_EARTH_PERIGEE_VELOCITY = 1068.3; // (m/sec)
-const MOON_AROUND_EARTH_APOGEE = 404.227 * Math.pow(10, 6); // (m)
-const MOON_AROUND_EARTH_APOGEE_VELOCITY = 968.3; // (m/sec)
-
-/*
-
-Perigee velocity
-Vp = Math.sqrt( (2 * G * M * Ra) / (Rp * (Ra + Rp) ))
-
-Apogee velocity
-Va = Math.sqrt( (2 * G * M * Rp) / (Ra * (Ra + Rp) ))
-
- */
-
-
 /**
  * F = G * m1 * m2 / r^2
  * @param m1 {Number} mass of first object (kg)
@@ -43,22 +21,34 @@ function calcGravityAcceleration({force, m2}) {
     return force / m2;
 }
 
+/**
+ * Calc velocity in extreme orbit points.
+ *
+ * Perigee velocity
+ * Vp = Math.sqrt( (2 * G * M * Ra) / (Rp * (Ra + Rp) ))
+ *
+ * Apogee velocity
+ * Va = Math.sqrt( (2 * G * M * Rp) / (Ra * (Ra + Rp) ))
+ *
+ * @param mass {Number} (m) orbit around planet mass,
+ * @param apsisRadius {Number} (m) distance in apsis, for which velocity is calculated
+ * @param otherApsisRadius {Number} (m) opposite apsis
+ * @return {number}
+ */
+function calcApsisVelocity({mass, apsisRadius, otherApsisRadius}) {
+    return Math.sqrt((2 * GRAVITATIONAL_CONSTANT * mass * otherApsisRadius) / (apsisRadius * (otherApsisRadius + apsisRadius)))
+}
+
 export default {
     GRAVITATIONAL_CONSTANT,
-    EARTH_MASS,
-    EARTH_RADIUS,
-    MOON_MASS,
-    MOON_RADIUS,
-    MOON_AROUND_EARTH_PERIGEE,
-    MOON_AROUND_EARTH_PERIGEE_VELOCITY,
-    MOON_AROUND_EARTH_APOGEE,
-    MOON_AROUND_EARTH_APOGEE_VELOCITY,
 
     calcGravityForce,
-    calcGravityAcceleration
+    calcGravityAcceleration,
+    calcApsisVelocity
 }
 
 export {
     calcGravityForce,
-    calcGravityAcceleration
+    calcGravityAcceleration,
+    calcApsisVelocity
 }

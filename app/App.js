@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initRangeInput({
         id: 'zoom',
         onChange: (val) => {
-            val = val / 100;
+            val = val / 10000;
             game.setZoom(val);
             return val;
         }

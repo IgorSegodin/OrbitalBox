@@ -25,7 +25,14 @@ function getInfoObjects({world, dT, targetObjectId}) {
     if (targetObjectId) {
         world.objects.filter((o) => o.getId() === targetObjectId).forEach((o) => {
             lines.push(`Name: ${o.getName()}`);
-            lines.push(`V: ${o.getPhysicsData().getVelocity().getValue().toFixed(2)} m/s`);
+            if (o.getPhysicsData()) {
+                if (o.getPhysicsData().getVelocity()) {
+                    lines.push(`V: ${o.getPhysicsData().getVelocity().getValue().toFixed(2)} m/s`);
+                }
+                if (o.getPhysicsData().getMass()) {
+                    lines.push(`M: ${(o.getPhysicsData().getMass() * Math.pow(10, -20)).toFixed(0)} x 10^20 kg`);
+                }
+            }
         });
     }
 
