@@ -26,16 +26,16 @@ describe('PhysUtil tests', function () {
         }));
     });
 
-    it('calcOrbitParameters test 01', function () {
-        const orbitParams = PhysUtil.calcOrbitParameters({
-            m1: PlanetConstants.EARTH_MASS,
-            r: PlanetConstants.EARTH_RADIUS + 400000,
-            v: 7672.4,
-            gamma: 90
-        });
-
-        // Rp 6770999.999999998
-        // Ra 6771127.221996205
-        assert.equal(1, orbitParams.apoapsis);
-    });
+    // it('calcOrbitParameters test 01', function () {
+    //     const orbitParams = PhysUtil.calcOrbitParameters({
+    //         m1: PlanetConstants.EARTH_MASS,
+    //         r: PlanetConstants.EARTH_RADIUS + 400000,
+    //         v: 7672.4,
+    //         gamma: 90
+    //     });
+    //
+    //     // Rp 6770999.999999998
+    //     // Ra 6771127.221996205
+    //     assert.equal(1, orbitParams.apoapsis);
+    // });
 });

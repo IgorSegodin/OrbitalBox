@@ -5,7 +5,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const buildProps = getBuildProps();
 
-const input = path.resolve(__dirname, "app");
+const input = path.resolve(__dirname, "src");
 const output = path.resolve(__dirname, buildProps.targetDirName || 'dist');
 
 

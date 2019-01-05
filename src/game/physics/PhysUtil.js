@@ -3,6 +3,7 @@ import MathUtil from 'game/math/MathUtil';
 const GRAVITATIONAL_CONSTANT = 6.67408 * Math.pow(10, -11); // (m^3 / (kg * sec^2))
 
 //http://www.braeunig.us/space/orbmech.htm
+// https://forum.kerbalspaceprogram.com/index.php?/topic/161861-orbital-calculation-headaches/
 
 /**
  * F = G * m1 * m2 / r^2
@@ -56,21 +57,32 @@ function calcOrbitParameters({m1, v, r, gamma}) {
     //     apoapsis: Math.max(R1, R2)
     // };
     const GM = GRAVITATIONAL_CONSTANT * m1;
-    const v2 = Math.pow(v, 2);
+    // const v2 = Math.pow(v, 2);
+    //
+    // const e = Math.sqrt(
+    //     Math.pow(r * v2 / GM - 1, 2) * Math.pow(Math.sin(MathUtil.angleToRadians(gamma)), 2) + Math.pow(Math.cos(MathUtil.angleToRadians(gamma)), 2)
+    // );
+    //
+    // const a = 1 / (
+    //     2 / r - v2 / GM
+    // );
 
-    const e = Math.sqrt(
-        Math.pow(r * v2 / GM - 1, 2) * Math.pow(Math.sin(MathUtil.angleToRadians(gamma)), 2) + Math.pow(Math.cos(MathUtil.angleToRadians(gamma)), 2)
-    );
+    // FG (Gravity) = G * M * m / r^2
+    // FC (Centrifugal Force) = m * vθ^2 / r
 
-    const a = 1 / (
-        2 / r - v2 / GM
-    );
+    // e = sqrt[ (ω*PUp/FG)2 + (FC/FG - 1)2 ]
+    // e = sqrt[(FC/FG - 1)^2]
+
+    const FG =  GM / (r * r);
+    const FC = v * v / r;
+
+    const e = FC / (FG - 1);
 
     return {
         e,
-        a,
-        periapsis: a * (1 - e),
-        apoapsis:a * (1 + e)
+        // a,
+        // periapsis: a * (1 - e),
+        // apoapsis:a * (1 + e)
     };
 }
 

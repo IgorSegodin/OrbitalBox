@@ -3,8 +3,8 @@ const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const input = path.resolve(__dirname, "app");
-const test_input = path.resolve(__dirname, "tests");
+const input = path.resolve(__dirname, "src");
+const test_input = path.resolve(__dirname, "test");
 const test_output = path.resolve(__dirname, 'test_dist');
 
 module.exports = {

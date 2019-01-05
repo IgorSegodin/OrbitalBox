@@ -75,13 +75,13 @@ function transformInternal({objectData, images}) {
 
     const img = images[props.image];
 
-    const object = new fabric.Circle();
-    // const object = new fabric.Image(img);
+    // const object = new fabric.Circle();
+    const object = new fabric.Image(img);
     object.set({
-        // width: radiusInPixel * 2,
-        // height: radiusInPixel * 2,
-        radius: radiusInPixel,
-        fill: "green",
+        width: radiusInPixel * 2,
+        height: radiusInPixel * 2,
+        // radius: radiusInPixel,
+        // fill: "green",
 
         originX: 'center',
         originY: 'center',
@@ -103,9 +103,11 @@ function transformInternal({objectData, images}) {
     });
 
     object.updateProps = function({objectData, fabricObject, zoom}) {
-        const radius = radiusInPixel * zoom;
+        const radius = Math.max(radiusInPixel * zoom, 3);
         fabricObject.set({
-            radius: Math.max(radius, 3)
+            // radius: Math.max(radius, 3),
+            width: radius * 2,
+            height: radius * 2,
         });
     };
 
