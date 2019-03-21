@@ -5,18 +5,6 @@ import PhysicsData from 'game/data/PhysicsData';
 import Point from 'game/math/Point'
 import Vector from 'game/math/Vector'
 
-import SunImage from 'game/resources/images/planets/01sun.png';
-import MercuryImage from 'game/resources/images/planets/02mercury.png';
-import VenusImage from 'game/resources/images/planets/03venus.png';
-import EarthImage from 'game/resources/images/planets/04earth.png';
-import MoonImage from 'game/resources/images/planets/05moon.png';
-import MarsImage from 'game/resources/images/planets/06mars.png';
-import JupiterImage from 'game/resources/images/planets/07jupiter.png';
-import SaturnImage from 'game/resources/images/planets/08saturn.png';
-import UranusImage from 'game/resources/images/planets/09uranus.png';
-import NeptuneImage from 'game/resources/images/planets/010neptune.png';
-import PlutoImage from 'game/resources/images/planets/011pluto.png';
-
 import {generateId} from 'game/world/generateId';
 
 import {
@@ -79,12 +67,12 @@ import {
  * @param name {String}
  * @param mass {Number}
  * @param radius {Number}
- * @param image {String}
+ * @param color {String}
  * @param aroundSunPeriapsis {Number}
  * @param velocity {Number}
  * @return {ObjectData}
  */
-function createPlanet({name, mass, radius, image, aroundSunPeriapsis, velocity}) {
+function createPlanet({name, mass, radius, color, aroundSunPeriapsis, velocity}) {
     return new ObjectData({
         id: generateId(),
         name: name,
@@ -99,7 +87,7 @@ function createPlanet({name, mass, radius, image, aroundSunPeriapsis, velocity})
         }),
         properties: {
             radius: radius,
-            image: image,
+            color: color,
         }
     });
 }
@@ -146,7 +134,7 @@ function generateWorld() {
                     }),
                     properties: {
                         radius: SUN_RADIUS,
-                        image: SunImage,
+                        color: "#FFF700",
                         static: true
                     }
                 }),
@@ -155,7 +143,7 @@ function generateWorld() {
                     name: "Mercury",
                     mass: MERCURY_MASS,
                     radius: MERCURY_RADIUS,
-                    image: MercuryImage,
+                    color: "#783434",
                     aroundSunPeriapsis: MERCURY_AROUND_SUN_PERIAPSIS,
                     velocity: MERCURY_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -164,7 +152,7 @@ function generateWorld() {
                     name: "Venus",
                     mass: VENUS_MASS,
                     radius: VENUS_RADIUS,
-                    image: VenusImage,
+                    color: "#CF8D46",
                     aroundSunPeriapsis: VENUS_AROUND_SUN_PERIAPSIS,
                     velocity: VENUS_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -173,7 +161,7 @@ function generateWorld() {
                     name: "Earth",
                     mass: EARTH_MASS,
                     radius: EARTH_RADIUS,
-                    image: EarthImage,
+                    color: "#b5ff2f",
                     aroundSunPeriapsis: EARTH_AROUND_SUN_PERIAPSIS,
                     velocity: EARTH_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -182,7 +170,7 @@ function generateWorld() {
                     name: "Moon",
                     mass: MOON_MASS,
                     radius: MOON_RADIUS,
-                    image: MoonImage,
+                    color: "#c3c3c3",
                     aroundSunPeriapsis: EARTH_AROUND_SUN_PERIAPSIS + MOON_AROUND_EARTH_PERIAPSIS,
                     velocity: EARTH_AROUND_SUN_PERIAPSIS_VELOCITY + MOON_AROUND_EARTH_PERIAPSIS_VELOCITY,
                 }),
@@ -191,7 +179,7 @@ function generateWorld() {
                     name: "Mars",
                     mass: MARS_MASS,
                     radius: MARS_RADIUS,
-                    image: MarsImage,
+                    color: "#FF5724",
                     aroundSunPeriapsis: MARS_AROUND_SUN_PERIAPSIS,
                     velocity: MARS_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -200,7 +188,7 @@ function generateWorld() {
                     name: "Jupiter",
                     mass: JUPITER_MASS,
                     radius: JUPITER_RADIUS,
-                    image: JupiterImage,
+                    color: "#83A3E2",
                     aroundSunPeriapsis: JUPITER_AROUND_SUN_PERIAPSIS,
                     velocity: JUPITER_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -209,7 +197,7 @@ function generateWorld() {
                     name: "Saturn",
                     mass: SATURN_MASS,
                     radius: SATURN_RADIUS,
-                    image: SaturnImage,
+                    color: "#D9A556",
                     aroundSunPeriapsis: SATURN_AROUND_SUN_PERIAPSIS,
                     velocity: SATURN_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -218,7 +206,7 @@ function generateWorld() {
                     name: "Uranus",
                     mass: URANUS_MASS,
                     radius: URANUS_RADIUS,
-                    image: UranusImage,
+                    color: "#6E95D1",
                     aroundSunPeriapsis: URANUS_AROUND_SUN_PERIAPSIS,
                     velocity: URANUS_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -227,7 +215,7 @@ function generateWorld() {
                     name: "Neptune",
                     mass: NEPTUNE_MASS,
                     radius: NEPTUNE_RADIUS,
-                    image: NeptuneImage,
+                    color: "#38b1ff",
                     aroundSunPeriapsis: NEPTUNE_AROUND_SUN_PERIAPSIS,
                     velocity: NEPTUNE_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),
@@ -236,7 +224,7 @@ function generateWorld() {
                     name: "Pluto",
                     mass: PLUTO_MASS,
                     radius: PLUTO_RADIUS,
-                    image: PlutoImage,
+                    color: "#c25e51",
                     aroundSunPeriapsis: PLUTO_AROUND_SUN_PERIAPSIS,
                     velocity: PLUTO_AROUND_SUN_PERIAPSIS_VELOCITY,
                 }),

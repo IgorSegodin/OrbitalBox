@@ -1,6 +1,8 @@
 * {
     padding: 0;
     margin: 0;
+
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
 }
 
 html, body, .bodyContainer {

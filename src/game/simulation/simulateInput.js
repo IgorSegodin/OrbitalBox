@@ -4,13 +4,16 @@ import Point from "game/math/Point";
 import Vector from "game/math/Vector";
 import Camera from 'game/world/Camera';
 import InputActionMap from 'game/world/InputActionMap';
+import {pixelToMeter} from "util/FabricUtil";
 
 /**
  * @param camera {Camera}
  * @param dT {Number} time between ticks
  */
 function calcDelta({camera, dT}) {
-    return Math.pow(10, 5) * dT;
+    dT = dT / 1000; // sec
+    const PIXEL_PER_SECOND = 200;
+    return pixelToMeter(PIXEL_PER_SECOND) * dT / camera.getZoom();
 }
 
 /**
@@ -42,13 +45,15 @@ function simulateInput({world, inputActionMap, camera, playerShip, targetObjectI
     }
 
     if (targetObjectId) {
+        // TODO add relative camera position
         world.objects.filter((o) => o.getId() === targetObjectId).forEach((o) => {
             x = o.getPosition().getX();
             y = o.getPosition().getY();
         });
     } else {
-        x = playerShip.getPosition().getX();
-        y = playerShip.getPosition().getY();
+        // TODO add relative camera position
+        // x = playerShip.getPosition().getX();
+        // y = playerShip.getPosition().getY();
     }
 
     if (pos.getX() !== x || pos.getY() !== y) {

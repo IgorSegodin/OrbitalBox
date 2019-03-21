@@ -103,6 +103,8 @@ class Game {
 
             let t0 = timer.getTime();
 
+            this.gameObjects = world.objects;
+
             this.interval = setInterval(() => {
                 const t1 = timer.getTime();
                 const dT = (t1 - t0);
@@ -152,6 +154,17 @@ class Game {
 
     setTargetObject(id) {
         this.targetObjectId = id;
+    }
+
+    getTargetObjectData() {
+        return this.getObjectDataById(this.targetObjectId);
+    }
+
+    getObjectDataById(id) {
+        if (!this.gameObjects) {
+            return null;
+        }
+        return this.gameObjects.find((o) => o.getId() === id);
     }
 
 }

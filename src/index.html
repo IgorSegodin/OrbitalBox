@@ -8,20 +8,21 @@
     <div class="info-container">
         <div class="info-wrapper">
             <div>This is real-scaled solar system simulation sandbox.</div>
+
             <br/>
 
             <div class="input-container">
 
                 <div>
                     <div><b>Time</b> x <span id="timeMultiplierLabel"></span></div>
-                    <input id="timeMultiplier" data-range-input type="range" value="50" step="1" min="0" max="1000000">
+                    <input id="timeMultiplier" data-range-input type="range" value="1" step="1" min="0" max="1000000">
                 </div>
 
                 <br/>
 
                 <div>
                     <div><b>Zoom</b> x <span id="zoomLabel"></span></div>
-                    <input id="zoom" data-range-input type="range" value="300000" step="10" min="1" max="1000000">
+                    <input id="zoom" data-range-input type="range" value="10000" step="10" min="1" max="1000000">
                 </div>
 
                 <br/>
@@ -32,6 +33,10 @@
                 </div>
 
             </div>
+
+            <br/>
+
+            <div id="control-panel"></div>
 
             <div id="version">v0.0.2</div>
         </div>

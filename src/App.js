@@ -1,5 +1,8 @@
 import Game from 'game/Game';
+import React from "react";
+import ReactDOM from "react-dom";
 import 'style.css';
+import ControlPanel from 'ui/ControlPanel'
 
 /**
  * @param id {String}
@@ -22,7 +25,7 @@ function createSelect({containerId, options, onChange}) {
     const selectEl = document.createElement("select");
     selectEl.setAttribute("data-select-input", "");
 
-    options.sort(function(a, b) {
+    options.sort(function (a, b) {
         return a.getName().localeCompare(b.getName());
     }).forEach((o) => {
         const optionEl = document.createElement("option");
@@ -76,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     game.init({
-        updateTargetObjectOptions: function(options) {
+        updateTargetObjectOptions: function (options) {
             createSelect({
                 containerId: 'targetSelect',
                 options: options,
@@ -84,6 +87,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     game.setTargetObject(+val);
                 }
             });
-        }
+        },
     });
+
+    setInterval(() => {
+        const data = game.getTargetObjectData();
+        if (data) {
+            ReactDOM.render(<ControlPanel objectData={data}/>, document.getElementById("control-panel"));
+        }
+    }, 1000);
+
 });
